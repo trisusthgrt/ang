@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   searchResults: Course[] = [];
   isSearchFocused = false;
   showUserDropdown = false;
+  showProfileDropdown = false;
   productName = 'LearnTech Academy'; // You can change this
   
   private searchSubject = new Subject<string>();
@@ -123,8 +124,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateToMyCourses() {
-    this.closeUserDropdown();
-    console.log('Navigate to my courses');
+    this.showProfileDropdown = false;
+    this.router.navigate(['/my-courses']);
+  }
+
+  isAuthorOrAdmin(): boolean {
+    return this.currentUser?.role === 'Author' || this.currentUser?.role === 'Admin';
   }
 
   navigateToBlog() {

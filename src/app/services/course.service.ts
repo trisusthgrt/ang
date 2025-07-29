@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, forkJoin } from 'rxjs';
+import { Observable, map, forkJoin, of } from 'rxjs';
 
 export interface Course {
   id: string;
@@ -48,6 +48,26 @@ export interface Lecture {
   title: string;
   duration: string;
   type: 'video' | 'reading' | 'quiz' | 'assignment';
+  videoUrl?: string;
+  pdfUrl?: string;
+  textContent?: string;
+  description?: string;
+}
+
+export interface LectureProgress {
+  lectureId: string;
+  completed: boolean;
+  watchedDuration: number;
+  totalDuration: number;
+  lastWatchedAt: Date;
+}
+
+export interface UserCourseProgress {
+  courseId: string;
+  userId: string;
+  lectureProgress: LectureProgress[];
+  overallProgress: number;
+  lastAccessedLecture?: string;
 }
 
 export interface AuthorProfile {
@@ -374,6 +394,105 @@ During his spare time he enjoys cooking, practicing yoga, surfing, watching TV s
         badgeType: 'bestseller'
       }
     ];
+  }
+
+  // Progress tracking methods
+  getLectureById(courseId: string, lectureId: string): Observable<Lecture | undefined> {
+    return this.getCourseById(courseId).pipe(
+      map(course => {
+        for (const section of course.curriculum?.sections || []) {
+          const lecture = section.lectures.find(l => l.id === lectureId);
+          if (lecture) {
+            return this.enrichLectureData(lecture);
+          }
+        }
+        return undefined;
+      })
+    );
+  }
+
+  getUserCourseProgress(courseId: string, userId: string): Observable<UserCourseProgress> {
+    const storageKey = `course_progress_${courseId}_${userId}`;
+    const stored = localStorage.getItem(storageKey);
+    
+    if (stored) {
+      return of(JSON.parse(stored));
+    }
+
+    // Initialize empty progress
+    const defaultProgress: UserCourseProgress = {
+      courseId,
+      userId,
+      lectureProgress: [],
+      overallProgress: 0
+    };
+
+    return of(defaultProgress);
+  }
+
+  updateLectureProgress(courseId: string, userId: string, lectureId: string, progress: Partial<LectureProgress>): Observable<UserCourseProgress> {
+    return this.getUserCourseProgress(courseId, userId).pipe(
+      map(userProgress => {
+        // Update or create lecture progress
+        const existingIndex = userProgress.lectureProgress.findIndex(p => p.lectureId === lectureId);
+        
+        const updatedProgress: LectureProgress = {
+          lectureId,
+          completed: false,
+          watchedDuration: 0,
+          totalDuration: 0,
+          lastWatchedAt: new Date(),
+          ...progress
+        };
+
+        if (existingIndex >= 0) {
+          userProgress.lectureProgress[existingIndex] = updatedProgress;
+        } else {
+          userProgress.lectureProgress.push(updatedProgress);
+        }
+
+        // Update last accessed lecture
+        userProgress.lastAccessedLecture = lectureId;
+
+        // Calculate overall progress
+        userProgress.overallProgress = this.calculateOverallProgress(userProgress.lectureProgress);
+
+        // Save to localStorage
+        const storageKey = `course_progress_${courseId}_${userId}`;
+        localStorage.setItem(storageKey, JSON.stringify(userProgress));
+
+        return userProgress;
+      })
+    );
+  }
+
+  markLectureComplete(courseId: string, userId: string, lectureId: string): Observable<UserCourseProgress> {
+    return this.updateLectureProgress(courseId, userId, lectureId, {
+      completed: true,
+      lastWatchedAt: new Date()
+    });
+  }
+
+  private calculateOverallProgress(lectureProgress: LectureProgress[]): number {
+    if (lectureProgress.length === 0) return 0;
+    
+    const completedCount = lectureProgress.filter(p => p.completed).length;
+    return Math.round((completedCount / lectureProgress.length) * 100);
+  }
+
+  private enrichLectureData(lecture: Lecture): Lecture {
+    // Add mock video URLs and content based on lecture type
+    const enriched = { ...lecture };
+    
+    if (lecture.type === 'video') {
+      enriched.videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+      enriched.description = `Learn about ${lecture.title} through this comprehensive video tutorial.`;
+    } else if (lecture.type === 'reading') {
+      enriched.pdfUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+      enriched.textContent = `This is the text content for ${lecture.title}. Here you'll find detailed explanations, examples, and additional resources to help you understand the concepts covered in this lesson.`;
+    }
+
+    return enriched;
   }
 
   getUserEnrollments(userId: string): Observable<UserEnrollment[]> {

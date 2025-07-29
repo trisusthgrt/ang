@@ -63,5 +63,28 @@
         +{{ course.skills.length - 3 }} more
       </span>
     </div>
+
+    <!-- Learning Action Buttons (only show for enrolled users) -->
+    <div class="learning-actions" *ngIf="isUserEnrolled()">
+      <!-- Continue Learning Button (if has progress) -->
+      <button *ngIf="hasProgress()" 
+              class="learning-btn continue-btn" 
+              (click)="onContinueLearning($event)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <polygon points="5,3 19,12 5,21"></polygon>
+        </svg>
+        Continue Learning
+      </button>
+
+      <!-- Start Learning Button (if no progress) -->
+      <button *ngIf="!hasProgress()" 
+              class="learning-btn start-btn" 
+              (click)="onStartLearning($event)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <polygon points="5,3 19,12 5,21"></polygon>
+        </svg>
+        Start Learning
+      </button>
+    </div>
   </div>
 </div> 

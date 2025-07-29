@@ -1,0 +1,315 @@
+<div class="course-player-page">
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading course...</p>
+  </div>
+
+  <!-- Course Player Content -->
+  <div *ngIf="!isLoading && course && currentLecture" class="course-player-layout">
+    
+    <!-- Left Panel: Main Content -->
+    <div class="main-content-panel">
+      
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a (click)="navigateToHome()" class="breadcrumb-link">Home</a>
+        <svg class="breadcrumb-separator" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <polyline points="9,18 15,12 9,6"></polyline>
+        </svg>
+        <span class="breadcrumb-current">{{ course.title }}</span>
+      </nav>
+
+      <!-- Content Viewer -->
+      <div class="content-viewer" (mousemove)="onMouseMove()">
+        
+        <!-- Video Player -->
+        <div *ngIf="currentLecture.type === 'video'" class="video-container">
+          <video
+            #videoPlayer
+            class="video-player"
+            [src]="currentLecture.videoUrl"
+            (loadedmetadata)="onVideoLoaded()"
+            (timeupdate)="onTimeUpdate()"
+            (play)="onVideoPlay()"
+            (pause)="onVideoPause()">
+          </video>
+
+          <!-- Video Controls -->
+          <div class="video-controls" [class.visible]="showControls">
+            
+            <!-- Progress Bar -->
+            <div class="progress-container">
+              <input
+                type="range"
+                class="progress-bar"
+                [min]="0"
+                [max]="duration"
+                [value]="currentTime"
+                (input)="seekTo(+$any($event.target).value)">
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="controls-row">
+              <div class="left-controls">
+                <!-- Play/Pause -->
+                <button class="control-btn" (click)="togglePlay()">
+                  <svg *ngIf="!isPlaying" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21"></polygon>
+                  </svg>
+                  <svg *ngIf="isPlaying" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16"></rect>
+                    <rect x="14" y="4" width="4" height="16"></rect>
+                  </svg>
+                </button>
+
+                <!-- Volume -->
+                <div class="volume-container">
+                  <button class="control-btn" (click)="toggleMute()">
+                    <svg *ngIf="!isMuted && volume > 0.5" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    <svg *ngIf="!isMuted && volume <= 0.5" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 9v6h4l5 5V4L7 9H3zm7 3.5c0-.77-.34-1.47-.89-1.96v3.92c.55-.49.89-1.19.89-1.96zm2.5 0c0 1.77-1.02 3.29-2.5 4.03V8.47c1.48.74 2.5 2.26 2.5 4.03z"/>
+                    </svg>
+                    <svg *ngIf="isMuted" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                    </svg>
+                  </button>
+                  
+                  <input
+                    type="range"
+                    class="volume-slider"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    [value]="volume"
+                    (input)="setVolume(+$any($event.target).value)">
+                </div>
+
+                <!-- Time Display -->
+                <div class="time-display">
+                  <span>{{ formatTime(currentTime) }}</span>
+                  <span>/</span>
+                  <span>{{ formatTime(duration) }}</span>
+                </div>
+              </div>
+
+              <div class="right-controls">
+                <!-- Playback Speed -->
+                <div class="speed-container">
+                  <select class="speed-select" [value]="playbackRate" (change)="setPlaybackRate(+$any($event.target).value)">
+                    <option value="0.5">0.5x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1">1x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                  </select>
+                </div>
+
+                <!-- Fullscreen -->
+                <button class="control-btn" (click)="toggleFullscreen()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PDF Viewer -->
+        <div *ngIf="currentLecture.type === 'reading' && currentLecture.pdfUrl" class="pdf-container">
+          <iframe
+            [src]="currentLecture.pdfUrl"
+            class="pdf-viewer"
+            frameborder="0">
+          </iframe>
+        </div>
+
+        <!-- Text Content -->
+        <div *ngIf="currentLecture.type === 'reading' && currentLecture.textContent" class="text-content">
+          <h2>{{ currentLecture.title }}</h2>
+          <p>{{ currentLecture.textContent }}</p>
+        </div>
+
+        <!-- Quiz Placeholder -->
+        <div *ngIf="currentLecture.type === 'quiz'" class="quiz-container">
+          <h2>{{ currentLecture.title }}</h2>
+          <p>Quiz content will be implemented here.</p>
+          <button class="complete-btn" (click)="markLectureComplete()">
+            Mark as Complete
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Content Tabs -->
+      <div class="content-tabs">
+        <nav class="tab-navigation">
+          <button *ngFor="let tab of tabs" 
+                  class="tab-btn"
+                  [class.active]="activeTab === tab.id"
+                  (click)="onTabClick(tab.id)">
+            {{ tab.label }}
+          </button>
+        </nav>
+
+        <div class="tab-content">
+          <!-- Overview Tab -->
+          <div *ngIf="activeTab === 'overview'" class="tab-panel">
+            <!-- What you'll Learn -->
+            <div class="content-section">
+              <h3 class="section-title">What you'll Learn</h3>
+              <ul class="learning-objectives">
+                <li *ngFor="let objective of course.whatYoullLearn" class="objective-item">
+                  {{ objective }}
+                </li>
+              </ul>
+            </div>
+
+            <!-- Skills you'll gain -->
+            <div class="content-section">
+              <h3 class="section-title">Skills you'll gain</h3>
+              <div class="skills-container">
+                <span *ngFor="let skill of course.skills" class="skill-tag">
+                  {{ skill }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Author Details Tab -->
+          <div *ngIf="activeTab === 'author'" class="tab-panel">
+            <div class="content-section">
+              <div class="author-profile">
+                <div class="author-card">
+                  <img [src]="course.authorDetails?.avatar" [alt]="course.authorDetails?.name" class="author-avatar">
+                  <div class="author-info">
+                    <h4 class="author-name">{{ course.authorDetails?.name }}</h4>
+                    <p class="author-title">{{ course.authorDetails?.title }}</p>
+                  </div>
+                </div>
+                <div class="author-biography">
+                  <p>{{ course.authorDetails?.biography }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonials Tab -->
+          <div *ngIf="activeTab === 'testimonials'" class="tab-panel">
+            <div class="content-section">
+              <div class="testimonials-grid">
+                <div *ngFor="let testimonial of course.testimonials?.slice(0, 2)" class="testimonial-card">
+                  <div class="testimonial-rating">
+                    <span class="rating-number">{{ testimonial.rating }}</span>
+                    <div class="stars">
+                      <span *ngFor="let star of getStarArray()" 
+                            class="star" 
+                            [class.filled]="star <= testimonial.rating">
+                        ★
+                      </span>
+                    </div>
+                  </div>
+                  <p class="testimonial-text">{{ testimonial.reviewText }}</p>
+                  <div class="reviewer-info">
+                    <img [src]="testimonial.reviewer.avatar" [alt]="testimonial.reviewer.name" class="reviewer-avatar">
+                    <div class="reviewer-details">
+                      <div class="reviewer-name">{{ testimonial.reviewer.name }}</div>
+                      <div class="reviewer-affiliation">{{ testimonial.reviewer.affiliation }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Panel: Course Curriculum -->
+    <div class="curriculum-panel">
+      <div class="curriculum-header">
+        <h3>Course Content</h3>
+        <div class="course-progress">
+          <span>{{ userProgress?.overallProgress || 0 }}% Complete</span>
+        </div>
+      </div>
+
+      <div class="curriculum-accordion">
+        <div *ngFor="let section of course.curriculum?.sections" class="curriculum-section">
+          
+          <!-- Section Header -->
+          <div class="section-header" (click)="toggleSection(section.id)">
+            <div class="section-info">
+              <svg class="expand-icon" 
+                   [class.expanded]="isSectionExpanded(section.id)"
+                   width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+              <span class="section-title">{{ section.title }}</span>
+            </div>
+            <div class="section-meta">
+              <span>{{ section.lectureCount }} lectures</span>
+            </div>
+          </div>
+
+          <!-- Section Content -->
+          <div class="section-content" [class.expanded]="isSectionExpanded(section.id)">
+            <div class="lectures-list">
+              <div *ngFor="let lecture of section.lectures" 
+                   class="lecture-item"
+                   [class.current]="isCurrentLecture(lecture.id)"
+                   [class.completed]="isLectureCompleted(lecture.id)"
+                   (click)="onLectureClick(lecture.id)">
+                
+                <div class="lecture-status">
+                  <!-- Completion Checkmark -->
+                  <svg *ngIf="isLectureCompleted(lecture.id)" 
+                       class="checkmark-icon" 
+                       width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 12l2 2 4-4"/>
+                    <circle cx="12" cy="12" r="10"/>
+                  </svg>
+                  
+                  <!-- Current Lecture Indicator -->
+                  <div *ngIf="isCurrentLecture(lecture.id) && !isLectureCompleted(lecture.id)" 
+                       class="current-indicator">
+                  </div>
+                  
+                  <!-- Lecture Type Icon -->
+                  <svg *ngIf="!isCurrentLecture(lecture.id) && !isLectureCompleted(lecture.id)" 
+                       class="lecture-icon" 
+                       width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polygon *ngIf="lecture.type === 'video'" points="5,3 19,12 5,21"></polygon>
+                    <path *ngIf="lecture.type === 'reading'" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <circle *ngIf="lecture.type === 'quiz'" cx="12" cy="12" r="10"></circle>
+                  </svg>
+                </div>
+
+                <div class="lecture-content">
+                  <span class="lecture-title">{{ lecture.title }}</span>
+                  <span class="lecture-duration">{{ formatDuration(lecture.duration) }}</span>
+                </div>
+
+                <!-- Progress Bar for Current/Partially Watched Lectures -->
+                <div *ngIf="getProgressPercentage(lecture.id) > 0 && !isLectureCompleted(lecture.id)" 
+                     class="lecture-progress">
+                  <div class="progress-bar" 
+                       [style.width.%]="getProgressPercentage(lecture.id)">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

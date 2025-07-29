@@ -25,5 +25,9 @@ export const routes: Routes = [
   {
     path: 'course/:id',
     loadComponent: () => import('./components/course-detail/course-detail.component').then(m => m.CourseDetailComponent)
+  },
+  {
+    path: 'learn/:courseId/lecture/:lectureId',
+    loadComponent: () => import('./components/course-player/course-player.component').then(m => m.CoursePlayerComponent)
   }
 ];

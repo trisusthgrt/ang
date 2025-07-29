@@ -64,6 +64,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.searchSubject.next(query);
   }
 
+  onSearchSubmit(event: Event) {
+    event.preventDefault();
+    if (this.searchQuery.trim()) {
+      this.navigateToSearch(this.searchQuery);
+    }
+  }
+
   onSearchFocus() {
     this.isSearchFocused = true;
   }
@@ -82,11 +89,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   selectCourse(course: Course) {
-    // Handle course selection - for now just clear search
-    this.searchQuery = course.title;
+    // Navigate to search results with the course title as query
+    this.navigateToSearch(course.title);
+  }
+
+  private navigateToSearch(query: string) {
+    this.searchQuery = query;
     this.searchResults = [];
     this.isSearchFocused = false;
-    console.log('Selected course:', course);
+    
+    // Navigate to search results page with query parameter
+    this.router.navigate(['/search'], {
+      queryParams: { q: query }
+    });
   }
 
   toggleUserDropdown() {

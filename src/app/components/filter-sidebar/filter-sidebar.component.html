@@ -1,0 +1,200 @@
+<div class="filter-sidebar">
+  <div class="filter-header">
+    <h3>Filter</h3>
+    <button 
+      *ngIf="hasActiveFilters()" 
+      class="clear-filters-btn"
+      (click)="clearAllFilters()">
+      Clear All
+    </button>
+  </div>
+
+  <!-- Duration Filter -->
+  <div class="filter-section">
+    <div class="filter-section-header" (click)="toggleSection('duration')">
+      <h4>Duration</h4>
+      <svg 
+        class="collapse-icon" 
+        [class.collapsed]="collapsedSections.duration"
+        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    </div>
+    
+    <div class="filter-options" [class.collapsed]="collapsedSections.duration">
+      <div *ngFor="let option of filterCounts?.duration" class="filter-option">
+        <label class="checkbox-label">
+                     <input 
+             type="checkbox"
+             [checked]="isDurationChecked(option.value)"
+             (change)="onDurationChange(option.value, $any($event.target).checked)">
+          <span class="checkbox-custom"></span>
+          <span class="option-text">{{ option.label }}</span>
+          <span class="option-count">({{ option.count }})</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rating Filter -->
+  <div class="filter-section">
+    <div class="filter-section-header" (click)="toggleSection('rating')">
+      <h4>Rating</h4>
+      <svg 
+        class="collapse-icon" 
+        [class.collapsed]="collapsedSections.rating"
+        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    </div>
+    
+    <div class="filter-options" [class.collapsed]="collapsedSections.rating">
+      <div *ngFor="let option of filterCounts?.rating" class="filter-option">
+        <label class="radio-label">
+          <input 
+            type="radio" 
+            name="rating"
+            [value]="option.value"
+            [checked]="isRatingSelected(+option.value)"
+            (change)="onRatingChange(+option.value)">
+          <span class="radio-custom"></span>
+          <div class="rating-option">
+            <div class="stars">
+              <span 
+                *ngFor="let star of generateStars(5)" 
+                class="star"
+                [class.filled]="isStarFilled(star, +option.value)">
+                ★
+              </span>
+            </div>
+            <span class="rating-text">{{ option.label }}</span>
+            <span class="option-count">({{ option.count }})</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Published Date Filter -->
+  <div class="filter-section">
+    <div class="filter-section-header" (click)="toggleSection('publishedDate')">
+      <h4>Published Date</h4>
+      <svg 
+        class="collapse-icon" 
+        [class.collapsed]="collapsedSections.publishedDate"
+        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    </div>
+    
+    <div class="filter-options" [class.collapsed]="collapsedSections.publishedDate">
+      <div class="filter-option">
+        <label class="radio-label">
+          <input 
+            type="radio" 
+            name="publishedDate"
+            value=""
+            [checked]="!activeFilters.publishedDate"
+            (change)="onPublishedDateChange('')">
+          <span class="radio-custom"></span>
+          <span class="option-text">All</span>
+                     <span class="option-count">({{ getAllPublishedDateCount() }})</span>
+        </label>
+      </div>
+      <div *ngFor="let option of filterCounts?.publishedDate" class="filter-option">
+        <label class="radio-label">
+          <input 
+            type="radio" 
+            name="publishedDate"
+            [value]="option.value"
+            [checked]="isPublishedDateSelected(option.value)"
+            (change)="onPublishedDateChange(option.value)">
+          <span class="radio-custom"></span>
+          <span class="option-text">{{ option.label }}</span>
+          <span class="option-count">({{ option.count }})</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Course Level Filter -->
+  <div class="filter-section">
+    <div class="filter-section-header" (click)="toggleSection('courseLevel')">
+      <h4>Course Level</h4>
+      <svg 
+        class="collapse-icon" 
+        [class.collapsed]="collapsedSections.courseLevel"
+        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    </div>
+    
+    <div class="filter-options" [class.collapsed]="collapsedSections.courseLevel">
+      <div *ngFor="let option of filterCounts?.courseLevel" class="filter-option">
+        <label class="checkbox-label">
+                     <input 
+             type="checkbox"
+             [checked]="isCourseLevelChecked(option.value)"
+             (change)="onCourseLevelChange(option.value, $any($event.target).checked)">
+          <span class="checkbox-custom"></span>
+          <span class="option-text">{{ option.label }}</span>
+          <span class="option-count">({{ option.count }})</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Author Filter -->
+  <div class="filter-section">
+    <div class="filter-section-header" (click)="toggleSection('author')">
+      <h4>Author</h4>
+      <svg 
+        class="collapse-icon" 
+        [class.collapsed]="collapsedSections.author"
+        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    </div>
+    
+    <div class="filter-options" [class.collapsed]="collapsedSections.author">
+      <div *ngFor="let option of filterCounts?.author?.slice(0, 10)" class="filter-option">
+        <label class="checkbox-label">
+                     <input 
+             type="checkbox"
+             [checked]="isAuthorChecked(option.value)"
+             (change)="onAuthorChange(option.value, $any($event.target).checked)">
+          <span class="checkbox-custom"></span>
+          <span class="option-text">{{ option.label }}</span>
+          <span class="option-count">({{ option.count }})</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topics Filter -->
+  <div class="filter-section">
+    <div class="filter-section-header" (click)="toggleSection('topics')">
+      <h4>Topics</h4>
+      <svg 
+        class="collapse-icon" 
+        [class.collapsed]="collapsedSections.topics"
+        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    </div>
+    
+    <div class="filter-options" [class.collapsed]="collapsedSections.topics">
+      <div *ngFor="let option of filterCounts?.topics?.slice(0, 15)" class="filter-option">
+        <label class="checkbox-label">
+                     <input 
+             type="checkbox"
+             [checked]="isTopicChecked(option.value)"
+             (change)="onTopicChange(option.value, $any($event.target).checked)">
+          <span class="checkbox-custom"></span>
+          <span class="option-text">{{ option.label }}</span>
+          <span class="option-count">({{ option.count }})</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div> 

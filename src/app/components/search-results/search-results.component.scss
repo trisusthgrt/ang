@@ -1,0 +1,369 @@
+.search-results-page {
+  min-height: 100vh;
+  background: #F9FAFB;
+}
+
+.search-results-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.search-results-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.filter-sidebar-container {
+  position: sticky;
+  top: 90px; // Account for header height
+}
+
+.results-main {
+  min-height: 600px;
+}
+
+// Results Header
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.results-info {
+  .results-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0;
+  }
+}
+
+.results-controls {
+  .sort-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #6B7280;
+    }
+
+    .sort-select {
+      appearance: none;
+      background: #F9FAFB;
+      border: 2px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 8px 32px 8px 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      &:hover {
+        border-color: #D1D5DB;
+      }
+    }
+
+    .dropdown-icon {
+      position: absolute;
+      right: 8px;
+      color: #9CA3AF;
+      pointer-events: none;
+    }
+  }
+}
+
+// Loading
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #E5E7EB;
+    border-top: 3px solid #3B82F6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  p {
+    color: #6B7280;
+    font-size: 16px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Course Grid
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.course-grid-item {
+  position: relative;
+}
+
+.course-card-wrapper {
+  position: relative;
+  height: 100%;
+
+  .new-launch-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #3B82F6;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Empty State
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  color: #9CA3AF;
+
+  svg {
+    margin-bottom: 24px;
+    stroke-width: 1.5;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #6B7280;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: #9CA3AF;
+    margin: 0;
+    max-width: 400px;
+  }
+}
+
+// Pagination
+.pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 0;
+  border-top: 1px solid #E5E7EB;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: white;
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      border-color: #3B82F6;
+      color: #3B82F6;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #F9FAFB;
+    }
+
+    svg {
+      stroke-width: 2;
+    }
+  }
+
+  .page-numbers {
+    display: flex;
+    gap: 4px;
+    margin: 0 16px;
+
+    .page-number {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border: 2px solid #E5E7EB;
+      border-radius: 8px;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover:not(.active) {
+        border-color: #3B82F6;
+        color: #3B82F6;
+      }
+
+      &.active {
+        background: #3B82F6;
+        border-color: #3B82F6;
+        color: white;
+      }
+    }
+  }
+}
+
+.pagination-info {
+  font-size: 14px;
+  color: #6B7280;
+  text-align: center;
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .search-results-layout {
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+  }
+
+  .courses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .search-results-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .filter-sidebar-container {
+    order: 2;
+    position: static;
+  }
+
+  .results-main {
+    order: 1;
+  }
+
+  .courses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .search-results-container {
+    padding: 24px 16px;
+  }
+
+  .results-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    padding: 20px;
+
+    .results-info .results-title {
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .results-controls {
+      .sort-dropdown {
+        justify-content: center;
+      }
+    }
+  }
+
+  .courses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .page-numbers {
+      margin: 8px 0;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .courses-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .pagination {
+    .pagination-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .page-numbers .page-number {
+      width: 36px;
+      height: 36px;
+      font-size: 12px;
+    }
+  }
+
+  .pagination-info {
+    font-size: 12px;
+  }
+} 

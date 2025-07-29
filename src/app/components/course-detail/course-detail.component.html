@@ -1,0 +1,380 @@
+<div class="course-detail-page">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading course details...</p>
+  </div>
+
+  <!-- Course Detail Content -->
+  <div *ngIf="!isLoading && course" class="course-detail-content">
+    
+    <!-- Course Banner Section -->
+    <section class="course-banner">
+      <div class="banner-container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+          <a (click)="navigateToHome()" class="breadcrumb-link">Home</a>
+          <svg class="breadcrumb-separator" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+          <span class="breadcrumb-current">{{ course.title }}</span>
+        </nav>
+
+        <!-- Course Title and Description -->
+        <div class="course-header">
+          <h1 class="course-title">{{ course.title }}</h1>
+          <p class="course-description">{{ course.subtitle }}</p>
+        </div>
+
+        <!-- Author and Enrollment Info -->
+        <div class="course-meta">
+          <div class="author-info">
+            <span class="created-by">Created by</span>
+            <a href="#" class="author-link">{{ course.provider.name }}</a>
+          </div>
+
+          <button class="enroll-btn" (click)="onEnrollClick()">
+            Enroll Now
+          </button>
+        </div>
+
+        <!-- Enrollment Count -->
+        <div class="enrollment-info">
+          <span class="enrollment-count">{{ getFormattedNumber(course.enrollmentCount) }} already enrolled</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Course Metrics Bar -->
+    <section class="course-metrics">
+      <div class="metrics-container">
+        <!-- Level -->
+        <div class="metric-item">
+          <div class="metric-label">Level</div>
+          <div class="metric-value" [style.color]="getDifficultyColor()">
+            {{ course.difficulty }} Level
+          </div>
+        </div>
+
+        <!-- Rating -->
+        <div class="metric-item">
+          <div class="metric-label">Rating</div>
+          <div class="metric-value">
+            <div class="rating-display">
+              <span class="rating-number">{{ course.rating }}</span>
+              <div class="stars">
+                <span *ngFor="let star of getStarArray()" 
+                      class="star" 
+                      [class.filled]="isStarFilled(star)">
+                  ★
+                </span>
+              </div>
+              <span class="review-count">({{ getFormattedNumber(course.reviewCount) }} reviews)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duration -->
+        <div class="metric-item">
+          <div class="metric-label">Duration</div>
+          <div class="metric-value">{{ course.durationText }}</div>
+        </div>
+
+        <!-- Flexible Schedule -->
+        <div class="metric-item">
+          <div class="metric-label">Flexible Schedule</div>
+          <div class="metric-value">Learn at your own pace</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enrollment Count (repeated section) -->
+    <section class="enrollment-banner">
+      <div class="enrollment-container">
+        <span class="enrollment-text">{{ getFormattedNumber(course.enrollmentCount) }} already enrolled</span>
+      </div>
+    </section>
+
+    <!-- Tabbed Content Section -->
+    <section class="tabbed-content">
+      <div class="content-container">
+        
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation">
+          <button *ngFor="let tab of tabs" 
+                  class="tab-btn"
+                  [class.active]="activeTab === tab.id"
+                  (click)="onTabClick(tab.id)">
+            {{ tab.label }}
+          </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          
+          <!-- Overview Tab -->
+          <div *ngIf="activeTab === 'overview'" class="tab-panel">
+            
+            <!-- What you'll Learn -->
+            <div class="content-section">
+              <h3 class="section-title">What you'll Learn</h3>
+              <ul class="learning-objectives">
+                <li *ngFor="let objective of course.whatYoullLearn" class="objective-item">
+                  {{ objective }}
+                </li>
+              </ul>
+            </div>
+
+            <!-- Skills you'll gain -->
+            <div class="content-section">
+              <h3 class="section-title">Skills you'll gain</h3>
+              <div class="skills-container">
+                <span *ngFor="let skill of course.skills" class="skill-tag">
+                  {{ skill }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Requirements -->
+            <div class="content-section">
+              <h3 class="section-title">Requirements</h3>
+              <ul class="requirements-list">
+                <li *ngFor="let requirement of course.requirements" class="requirement-item">
+                  {{ requirement }}
+                </li>
+              </ul>
+            </div>
+
+            <!-- Description -->
+            <div class="content-section">
+              <h3 class="section-title">Description</h3>
+              <div class="description-content">
+                <p>{{ course.subtitle }}</p>
+                <p>This comprehensive course will take you through all the essential concepts and practical applications. You'll gain hands-on experience with real-world projects and learn industry-standard practices.</p>
+                
+                <h4>What makes this course special:</h4>
+                <ul>
+                  <li>Hands-on, practical approach to learning</li>
+                  <li>Real-world projects and case studies</li>
+                  <li>Industry-expert instructors</li>
+                  <li>Comprehensive curriculum covering all essential topics</li>
+                  <li>Flexible learning schedule</li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Course Content Tab -->
+          <div *ngIf="activeTab === 'content'" class="tab-panel">
+            <div class="content-section">
+              
+              <!-- Curriculum Header -->
+              <div class="curriculum-header">
+                <div class="curriculum-summary">
+                  <span>{{ course.curriculum?.totalSections }} Sections</span>
+                  <span>•</span>
+                  <span>{{ course.curriculum?.totalLectures }} Lectures</span>
+                  <span>•</span>
+                  <span>{{ course.curriculum?.totalDuration }} total length</span>
+                </div>
+                
+                <button class="expand-all-btn" (click)="toggleAllSections()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                  {{ allSectionsExpanded ? 'Collapse all sections' : 'Expand all sections' }}
+                </button>
+              </div>
+
+              <!-- Curriculum Accordion -->
+              <div class="curriculum-accordion">
+                <div *ngFor="let section of course.curriculum?.sections" class="curriculum-section">
+                  
+                  <!-- Section Header -->
+                  <div class="section-header" (click)="toggleSection(section.id)">
+                    <div class="section-info">
+                      <svg class="expand-icon" 
+                           [class.expanded]="isSectionExpanded(section.id)"
+                           width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                      </svg>
+                      <span class="section-title">{{ section.title }}</span>
+                    </div>
+                    <div class="section-meta">
+                      <span>{{ section.lectureCount }} Lectures</span>
+                      <span>•</span>
+                      <span>{{ section.duration }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Section Content -->
+                  <div class="section-content" [class.expanded]="isSectionExpanded(section.id)">
+                    <div class="lectures-list">
+                      <div *ngFor="let lecture of section.lectures" class="lecture-item">
+                        <div class="lecture-icon">
+                          <svg *ngIf="lecture.type === 'video'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polygon points="5,3 19,12 5,21"></polygon>
+                          </svg>
+                          <svg *ngIf="lecture.type === 'reading'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                          </svg>
+                          <svg *ngIf="lecture.type === 'quiz'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9,12l2,2 4,-4"></path>
+                          </svg>
+                        </div>
+                        <span class="lecture-title">{{ lecture.title }}</span>
+                        <span class="lecture-duration">{{ lecture.duration }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Author Details Tab -->
+          <div *ngIf="activeTab === 'author'" class="tab-panel">
+            <div class="content-section">
+              
+              <!-- Author Profile -->
+              <div class="author-profile">
+                <div class="author-header">
+                  <h3 class="section-title">Author</h3>
+                </div>
+                
+                <div class="author-card">
+                  <img [src]="course.authorDetails?.avatar" [alt]="course.authorDetails?.name" class="author-avatar">
+                  
+                  <div class="author-info">
+                    <h4 class="author-name">{{ course.authorDetails?.name }}</h4>
+                    <p class="author-title">{{ course.authorDetails?.title }}</p>
+                    
+                    <div class="author-badges">
+                      <span *ngIf="course.authorDetails?.stats?.bestSellingInstructor" class="author-badge">
+                        Best Selling Instructor
+                      </span>
+                      <span *ngIf="course.authorDetails?.stats?.awsCertified" class="author-badge">
+                        11x AWS Certified
+                      </span>
+                      <span *ngIf="course.authorDetails?.stats?.kafkaGuru" class="author-badge">
+                        Kafka Guru
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Author Biography -->
+                <div class="author-biography">
+                  <p>{{ course.authorDetails?.biography }}</p>
+                </div>
+
+                <!-- FAQs -->
+                <div class="author-faqs">
+                  <div *ngFor="let faq of course.authorDetails?.faqs" class="faq-item">
+                    <h5 class="faq-question">{{ faq.question }}</h5>
+                    <p class="faq-answer">{{ faq.answer }}</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonials Tab -->
+          <div *ngIf="activeTab === 'testimonials'" class="tab-panel">
+            <div class="content-section">
+              
+              <!-- Testimonials Grid -->
+              <div class="testimonials-grid">
+                <div *ngFor="let testimonial of course.testimonials" class="testimonial-card">
+                  
+                  <!-- Rating -->
+                  <div class="testimonial-rating">
+                    <span class="rating-number">{{ testimonial.rating }}</span>
+                    <div class="stars">
+                      <span *ngFor="let star of getTestimonialStars(testimonial.rating)" 
+                            class="star" 
+                            [class.filled]="isTestimonialStarFilled(star, testimonial.rating)">
+                        ★
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Review Text -->
+                  <p class="testimonial-text">{{ testimonial.reviewText }}</p>
+
+                  <!-- Reviewer Info -->
+                  <div class="reviewer-info">
+                    <img [src]="testimonial.reviewer.avatar" [alt]="testimonial.reviewer.name" class="reviewer-avatar">
+                    <div class="reviewer-details">
+                      <div class="reviewer-name">{{ testimonial.reviewer.name }}</div>
+                      <div class="reviewer-affiliation">{{ testimonial.reviewer.affiliation }}</div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Courses Section -->
+    <section class="related-courses-section">
+      <div class="related-courses-container">
+        <h3 class="related-courses-title">Related Courses</h3>
+        
+        <div class="related-courses-list">
+          <div *ngFor="let relatedCourse of course.relatedCourses" class="related-course-item">
+            
+            <div class="related-course-thumbnail">
+              <img [src]="relatedCourse.thumbnailUrl" [alt]="relatedCourse.title" class="related-course-image">
+            </div>
+
+            <div class="related-course-content">
+              <h4 class="related-course-title">{{ relatedCourse.title }}</h4>
+              <div class="related-course-meta">
+                <span class="related-course-duration">{{ relatedCourse.duration }}</span>
+                <span class="related-course-updated">Last updated 12/2024</span>
+              </div>
+            </div>
+
+            <div class="related-course-rating">
+              <div class="rating-display">
+                <span class="rating-number">{{ relatedCourse.rating }}</span>
+                <div class="stars">
+                  <span *ngFor="let star of getStarArray()" 
+                        class="star" 
+                        [class.filled]="star <= relatedCourse.rating">
+                    ★
+                  </span>
+                </div>
+                <span class="review-count">({{ getFormattedNumber(relatedCourse.reviewCount) }} reviews)</span>
+              </div>
+            </div>
+
+            <div class="related-course-badge">
+              <span class="badge" [ngClass]="getRelatedCourseBadgeClass(relatedCourse.badgeType)">
+                {{ relatedCourse.badge }}
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</div>

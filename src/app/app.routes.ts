@@ -17,5 +17,13 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent)
+  },
+  {
+    path: 'search',
+    loadComponent: () => import('./components/search-results/search-results.component').then(m => m.SearchResultsComponent)
+  },
+  {
+    path: 'course/:id',
+    loadComponent: () => import('./components/course-detail/course-detail.component').then(m => m.CourseDetailComponent)
   }
 ];

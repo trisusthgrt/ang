@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { CourseWithProgress } from '../../services/course.service';
 
 @Component({
@@ -12,6 +13,13 @@ import { CourseWithProgress } from '../../services/course.service';
 export class CourseCardComponent {
   @Input() course!: CourseWithProgress;
   @Input() showProgress: boolean = false;
+
+  constructor(private router: Router) {}
+
+  onCardClick() {
+    // Navigate to course detail page
+    this.router.navigate(['/course', this.course.id]);
+  }
 
   getDifficultyColor(): string {
     switch (this.course.difficulty) {

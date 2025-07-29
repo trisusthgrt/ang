@@ -1,0 +1,129 @@
+<div class="search-results-page">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Main Content -->
+  <div class="search-results-container">
+    <div class="search-results-layout">
+      
+      <!-- Filter Sidebar -->
+      <aside class="filter-sidebar-container">
+        <app-filter-sidebar
+          [filterCounts]="filterCounts"
+          [activeFilters]="activeFilters"
+          (filtersChange)="onFiltersChange($event)">
+        </app-filter-sidebar>
+      </aside>
+
+      <!-- Main Results Area -->
+      <main class="results-main">
+        
+        <!-- Results Header -->
+        <div class="results-header">
+          <div class="results-info">
+            <h1 class="results-title">{{ getResultsText() }}</h1>
+          </div>
+          
+          <div class="results-controls">
+            <div class="sort-dropdown">
+              <label for="sort-select">Sort:</label>
+              <select 
+                id="sort-select"
+                [value]="sortBy"
+                (change)="onSortChange($any($event.target).value)"
+                class="sort-select">
+                <option *ngFor="let option of sortOptions" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+              <svg class="dropdown-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="6,9 12,15 18,9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Searching courses...</p>
+        </div>
+
+        <!-- Course Grid -->
+        <div *ngIf="!isLoading && searchResults" class="courses-grid">
+          <div *ngFor="let course of searchResults.courses" class="course-grid-item">
+            <div class="course-card-wrapper">
+              <!-- New Launch Badge -->
+              <div *ngIf="hasNewLaunchBadge(course)" class="new-launch-badge">
+                New Launch
+              </div>
+              
+              <!-- Course Card -->
+              <app-course-card 
+                [course]="course"
+                [showProgress]="false">
+              </app-course-card>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="searchResults.courses.length === 0" class="empty-state">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <h3>No courses found</h3>
+            <p>Try adjusting your search criteria or filters to find more courses.</p>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="!isLoading && searchResults && searchResults.courses.length > 0" class="pagination-container">
+          <div class="pagination">
+            <!-- Previous Button -->
+            <button 
+              class="pagination-btn"
+              [disabled]="currentPage === 1"
+              (click)="onPageChange(currentPage - 1)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="15,18 9,12 15,6"></polyline>
+              </svg>
+              Previous
+            </button>
+
+            <!-- Page Numbers -->
+            <div class="page-numbers">
+              <button 
+                *ngFor="let page of getPageNumbers()"
+                class="page-number"
+                [class.active]="page === currentPage"
+                (click)="onPageChange(page)">
+                {{ page }}
+              </button>
+            </div>
+
+            <!-- Next Button -->
+            <button 
+              class="pagination-btn"
+              [disabled]="currentPage >= getTotalPages()"
+              (click)="onPageChange(currentPage + 1)">
+              Next
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Pagination Info -->
+          <div class="pagination-info">
+            <span>
+              Page {{ currentPage }} of {{ getTotalPages() }} 
+              ({{ searchResults.filteredCount }} total results)
+            </span>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div> 

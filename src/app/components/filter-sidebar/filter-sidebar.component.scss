@@ -1,0 +1,271 @@
+.filter-sidebar {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 90px; // Account for header height
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E5E7EB;
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0;
+  }
+
+  .clear-filters-btn {
+    background: none;
+    border: 1px solid #E5E7EB;
+    color: #6B7280;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #F3F4F6;
+      border-color: #D1D5DB;
+    }
+  }
+}
+
+.filter-section {
+  margin-bottom: 24px;
+  border-bottom: 1px solid #F3F4F6;
+  padding-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.filter-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #3B82F6;
+  }
+
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+  }
+
+  .collapse-icon {
+    color: #9CA3AF;
+    transition: transform 0.3s ease;
+
+    &.collapsed {
+      transform: rotate(-90deg);
+    }
+  }
+}
+
+.filter-options {
+  max-height: 300px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+
+  &.collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+.filter-option {
+  margin: 8px 0;
+
+  .checkbox-label,
+  .radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #F9FAFB;
+      border-radius: 6px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      display: none;
+    }
+
+    .checkbox-custom,
+    .radio-custom {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #D1D5DB;
+      margin-right: 12px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .checkbox-custom {
+      border-radius: 3px;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 1px;
+        left: 4px;
+        width: 6px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+    }
+
+    .radio-custom {
+      border-radius: 50%;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: white;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+    }
+
+    input[type="checkbox"]:checked + .checkbox-custom {
+      background: #3B82F6;
+      border-color: #3B82F6;
+
+      &::after {
+        opacity: 1;
+      }
+    }
+
+    input[type="radio"]:checked + .radio-custom {
+      background: #3B82F6;
+      border-color: #3B82F6;
+
+      &::after {
+        opacity: 1;
+      }
+    }
+
+    .option-text {
+      flex: 1;
+      font-size: 14px;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    .option-count {
+      font-size: 12px;
+      color: #9CA3AF;
+      font-weight: 400;
+    }
+  }
+}
+
+// Rating specific styles
+.rating-option {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 8px;
+
+  .stars {
+    display: flex;
+    gap: 1px;
+
+    .star {
+      font-size: 14px;
+      color: #D1D5DB;
+
+      &.filled {
+        color: #FCD34D;
+      }
+    }
+  }
+
+  .rating-text {
+    font-size: 14px;
+    color: #374151;
+    font-weight: 500;
+    min-width: 60px;
+  }
+
+  .option-count {
+    margin-left: auto;
+  }
+}
+
+// Responsive design
+@media (max-width: 1024px) {
+  .filter-sidebar {
+    position: static;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-sidebar {
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .filter-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+
+    h3 {
+      font-size: 18px;
+    }
+  }
+
+  .filter-section {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
+
+  .filter-section-header h4 {
+    font-size: 14px;
+  }
+}
+
+// Mobile collapse all sections by default
+@media (max-width: 640px) {
+  .filter-options {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+} 

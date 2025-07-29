@@ -1,0 +1,67 @@
+<div class="course-card">
+  <!-- Course Thumbnail with Progress Overlay -->
+  <div class="course-thumbnail">
+    <img [src]="course.thumbnailUrl" [alt]="course.title" class="thumbnail-image">
+    
+    <!-- Progress Badge -->
+    <div *ngIf="showProgress && course.progressPercent !== undefined && course.progressPercent > 0" 
+         class="progress-badge" 
+         [ngClass]="getProgressBadgeClass()">
+      {{ getProgressBadgeText() }}
+    </div>
+  </div>
+
+  <!-- Course Content -->
+  <div class="course-content">
+    <!-- Course Title -->
+    <h3 class="course-title">{{ course.title }}</h3>
+    
+    <!-- Provider -->
+    <div class="course-provider">
+      <img [src]="course.provider.logoUrl" [alt]="course.provider.name" class="provider-logo" 
+           onerror="this.style.display='none'">
+      <span class="provider-name">{{ course.provider.name }}</span>
+    </div>
+
+    <!-- Course Metadata -->
+    <div class="course-metadata">
+      <!-- Rating and Reviews -->
+      <div class="rating-section">
+        <div class="stars">
+          <span class="star-rating">{{ course.rating }}</span>
+          <div class="stars-visual">
+            <span *ngFor="let star of [1,2,3,4,5]" 
+                  class="star" 
+                  [class.filled]="star <= course.rating">
+              ★
+            </span>
+          </div>
+        </div>
+        <span class="review-count">({{ formatNumber(course.reviewCount) }} reviews)</span>
+      </div>
+
+      <!-- Enrollment Count -->
+      <div class="enrollment-count">
+        {{ formatNumber(course.enrollmentCount) }} enrolled
+      </div>
+
+      <!-- Difficulty and Duration -->
+      <div class="course-details">
+        <span class="difficulty" [style.color]="getDifficultyColor()">
+          {{ course.difficulty }}
+        </span>
+        <span class="duration">{{ course.durationText }}</span>
+      </div>
+    </div>
+
+    <!-- Skills Tags -->
+    <div class="skills-section" *ngIf="course.skills.length > 0">
+      <span *ngFor="let skill of course.skills.slice(0, 3)" class="skill-tag">
+        {{ skill }}
+      </span>
+      <span *ngIf="course.skills.length > 3" class="more-skills">
+        +{{ course.skills.length - 3 }} more
+      </span>
+    </div>
+  </div>
+</div> 

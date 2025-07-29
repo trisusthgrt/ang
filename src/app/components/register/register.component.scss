@@ -1,0 +1,336 @@
+// Import the same base styles as login component
+.auth-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #9bb5a4 0%, #a8c8b7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-layout {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  max-width: 1000px;
+  width: 100%;
+  min-height: 600px;
+}
+
+.left-panel {
+  flex: 1;
+  background: linear-gradient(135deg, #9bb5a4 0%, #a8c8b7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+
+  .illustration {
+    width: 100%;
+    max-width: 400px;
+    
+    .learning-illustration {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.right-panel {
+  flex: 1;
+  padding: 60px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 40px;
+
+  .product-name {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2D3748;
+    margin: 0 0 20px 0;
+  }
+
+  .welcome-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1A202C;
+    margin: 0 0 8px 0;
+  }
+
+  .welcome-subtitle {
+    font-size: 16px;
+    color: #718096;
+    margin: 0;
+  }
+}
+
+// Messages
+.message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: center;
+
+  &.success-message {
+    background: #F0FFF4;
+    color: #22C55E;
+    border: 1px solid #BBF7D0;
+  }
+
+  &.error-message {
+    background: #FEF2F2;
+    color: #EF4444;
+    border: 1px solid #FECACA;
+  }
+}
+
+.auth-form {
+  .form-group {
+    margin-bottom: 20px;
+
+    .form-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      font-size: 16px;
+      background: #F7FAFC;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        border-color: #4FD1C7;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(79, 209, 199, 0.1);
+      }
+
+      &.invalid {
+        border-color: #E53E3E;
+        background: #FED7D7;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      &::placeholder {
+        color: #A0AEC0;
+      }
+    }
+
+    .password-field {
+      position: relative;
+
+      .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #A0AEC0;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover:not(:disabled) {
+          color: #4FD1C7;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        svg {
+          stroke-width: 2;
+        }
+      }
+    }
+  }
+
+  .form-options {
+    margin-bottom: 30px;
+
+    &.register-options {
+      display: block;
+
+      .checkbox-container {
+        display: flex;
+        align-items: flex-start;
+        cursor: pointer;
+        font-size: 14px;
+        color: #4A5568;
+        line-height: 1.4;
+
+        input[type="checkbox"] {
+          margin-right: 8px;
+          margin-top: 2px;
+          width: 16px;
+          height: 16px;
+          accent-color: #4FD1C7;
+          flex-shrink: 0;
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: #4A5568;
+
+      input[type="checkbox"] {
+        margin-right: 8px;
+        width: 16px;
+        height: 16px;
+        accent-color: #4FD1C7;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .forgot-password {
+      font-size: 14px;
+      color: #4FD1C7;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: #4FD1C7;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    &:hover:not(:disabled) {
+      background: #38B2AC;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 209, 199, 0.3);
+    }
+
+    &:disabled {
+      background: #CBD5E0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .loading-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  .auth-switch {
+    text-align: center;
+    font-size: 14px;
+    color: #718096;
+
+    .switch-link {
+      color: #4FD1C7;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .auth-layout {
+    flex-direction: column;
+    max-width: 100%;
+    margin: 10px;
+    border-radius: 15px;
+  }
+
+  .left-panel {
+    padding: 30px 20px;
+    min-height: 200px;
+  }
+
+  .right-panel {
+    padding: 40px 20px;
+  }
+
+  .form-header {
+    margin-bottom: 30px;
+
+    .welcome-title {
+      font-size: 28px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 10px;
+  }
+
+  .right-panel {
+    padding: 30px 15px;
+  }
+
+  .form-header {
+    .welcome-title {
+      font-size: 24px;
+    }
+  }
+} 

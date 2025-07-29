@@ -1,0 +1,169 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Dashboard Content -->
+  <main class="dashboard-content">
+    <div class="content-wrapper">
+      
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading your dashboard...</p>
+      </div>
+
+      <!-- Dashboard Content -->
+      <div *ngIf="!isLoading" class="dashboard-sections">
+        
+        <!-- Statistics Section -->
+        <section class="stats-section">
+          <div class="stats-cards">
+            <!-- My Goals Card -->
+            <div class="stat-card goals-card">
+              <div class="card-content">
+                <div class="stat-info">
+                                     <div class="stat-number">{{ (userStats?.myGoals) || 0 }}</div>
+                  <div class="stat-label">My Goals</div>
+                  <a href="#" class="stat-link">View All</a>
+                </div>
+                <div class="stat-visual">
+                  <svg class="stat-icon" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#E5E7EB" stroke-width="8"/>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#10B981" stroke-width="8" 
+                            stroke-dasharray="251.2" stroke-dashoffset="125.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Enrolled Courses Card -->
+            <div class="stat-card enrolled-card">
+              <div class="card-content">
+                <div class="stat-info">
+                                     <div class="stat-number">{{ (userStats?.enrolledCourses) || 0 }}</div>
+                  <div class="stat-label">Enrolled Courses</div>
+                  <a href="#" class="stat-link">View All</a>
+                </div>
+                <div class="stat-visual">
+                  <svg class="stat-icon" viewBox="0 0 100 80">
+                    <rect x="10" y="20" width="80" height="50" rx="4" fill="#E5E7EB"/>
+                    <rect x="10" y="20" width="60" height="50" rx="4" fill="#3B82F6"/>
+                    <rect x="15" y="25" width="50" height="8" rx="2" fill="white"/>
+                    <rect x="15" y="37" width="40" height="6" rx="2" fill="white"/>
+                    <rect x="15" y="47" width="35" height="6" rx="2" fill="white"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Certificates Earned Card -->
+            <div class="stat-card certificates-card">
+              <div class="card-content">
+                <div class="stat-info">
+                                     <div class="stat-number">{{ (userStats?.certificatesEarned) || 0 }}</div>
+                  <div class="stat-label">Certificates Earned</div>
+                  <a href="#" class="stat-link">Download</a>
+                </div>
+                <div class="stat-visual">
+                  <svg class="stat-icon" viewBox="0 0 100 100">
+                    <path d="M20 30 L80 30 L70 80 L30 80 Z" fill="#60A5FA"/>
+                    <circle cx="50" cy="45" r="15" fill="#FCD34D"/>
+                    <path d="M50 35 L53 41 L59 41 L54 45 L56 51 L50 48 L44 51 L46 45 L41 41 L47 41 Z" fill="#F59E0B"/>
+                    <rect x="40" y="65" width="20" height="4" fill="#3B82F6"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Last Viewed Courses Section -->
+        <section class="courses-section">
+          <div class="section-header">
+            <h2>Last Viewed Courses</h2>
+          </div>
+          
+          <div class="carousel-container">
+            <button 
+              class="carousel-btn carousel-btn-left"
+              (click)="scrollCarousel('lastViewedCarousel', 'left')"
+              [disabled]="lastViewedCourses.length === 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="15,18 9,12 15,6"></polyline>
+              </svg>
+            </button>
+
+            <div class="carousel" id="lastViewedCarousel">
+              <div class="carousel-track">
+                <app-course-card 
+                  *ngFor="let course of lastViewedCourses"
+                  [course]="course"
+                  [showProgress]="true"
+                  class="carousel-item">
+                </app-course-card>
+
+                <!-- Empty state -->
+                <div *ngIf="lastViewedCourses.length === 0" class="empty-state">
+                  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                  <p>No courses viewed yet</p>
+                  <p class="empty-subtitle">Start exploring our course catalog!</p>
+                </div>
+              </div>
+            </div>
+
+            <button 
+              class="carousel-btn carousel-btn-right"
+              (click)="scrollCarousel('lastViewedCarousel', 'right')"
+              [disabled]="lastViewedCourses.length === 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- Newly Launched Courses Section -->
+        <section class="courses-section">
+          <div class="section-header">
+            <h2>Newly Launched</h2>
+          </div>
+          
+          <div class="carousel-container">
+            <button 
+              class="carousel-btn carousel-btn-left"
+              (click)="scrollCarousel('newlyLaunchedCarousel', 'left')"
+              [disabled]="newlyLaunchedCourses.length === 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="15,18 9,12 15,6"></polyline>
+              </svg>
+            </button>
+
+            <div class="carousel" id="newlyLaunchedCarousel">
+              <div class="carousel-track">
+                <app-course-card 
+                  *ngFor="let course of newlyLaunchedCourses"
+                  [course]="course"
+                  [showProgress]="false"
+                  class="carousel-item">
+                </app-course-card>
+              </div>
+            </div>
+
+            <button 
+              class="carousel-btn carousel-btn-right"
+              (click)="scrollCarousel('newlyLaunchedCarousel', 'right')"
+              [disabled]="newlyLaunchedCourses.length === 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</div> 

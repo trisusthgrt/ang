@@ -1,0 +1,409 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "hshimron",
+      "email": "harry.shimron@example.com",
+      "password": "hashed_password",
+      "fullName": "Harry Shimron",
+      "track": "DC Software Engineer II",
+      "avatarUrl": "https://i.pravatar.cc/150?u=hshimron",
+      "joinDate": "2021-08-14T00:00:00.000Z",
+      "role": "Admin",
+      "bio": "Passionate writer and avid traveler, Harry shares insights from his adventures around the globe. With a background in journalism, he combines storytelling with a love for photography, capturing the essence of each destination.",
+      "location": "Bangalore, India"
+    },
+    {
+      "id": "2",
+      "username": "smaarek",
+      "email": "stephane.maarek@example.com",
+      "password": "hashed_password",
+      "fullName": "Stephane Maarek",
+      "track": "AWS Certified Cloud Practitioner",
+      "avatarUrl": "https://i.pravatar.cc/150?u=smaarek",
+      "joinDate": "2020-05-20T00:00:00.000Z",
+      "role": "Author",
+      "bio": "He is a solutions architect, consultant and software developer that has a particular interest in all things related to Cloud and Big Data. He's also a many-times best seller instructor on Udemy for his courses in AWS and Apache Kafka.",
+      "location": "New York, USA"
+    },
+    {
+      "id": "3",
+      "username": "wwarren",
+      "email": "wade.warren@example.com",
+      "password": "hashed_password",
+      "fullName": "Wade Warren",
+      "track": "Learning for U.S",
+      "avatarUrl": "https://i.pravatar.cc/150?u=wwarren",
+      "joinDate": "2022-01-10T00:00:00.000Z",
+      "role": "Learner",
+      "bio": null,
+      "location": "USA"
+    },
+    {
+      "id": "4",
+      "username": "jjones",
+      "email": "jacob.jones@example.com",
+      "password": "hashed_password",
+      "fullName": "Jacob Jones",
+      "track": "Learning for India",
+      "avatarUrl": "https://i.pravatar.cc/150?u=jjones",
+      "joinDate": "2022-03-15T00:00:00.000Z",
+      "role": "Learner",
+      "bio": null,
+      "location": "India"
+    },
+    {
+      "id": "5",
+      "username": "asinghla",
+      "email": "alisha.singhla@example.com",
+      "password": "hashed_password",
+      "fullName": "Alisha Singhla",
+      "track": null,
+      "avatarUrl": "https://i.pravatar.cc/150?u=asinghla",
+      "joinDate": "2022-06-15T00:00:00.000Z",
+      "role": "Author",
+      "bio": null,
+      "location": null
+    },
+    {
+      "id": "6",
+      "username": "ddeb",
+      "email": "dipaman.deb@example.com",
+      "password": "hashed_password",
+      "fullName": "Dipaman Deb",
+      "track": null,
+      "avatarUrl": "https://i.pravatar.cc/150?u=ddeb",
+      "joinDate": "2022-06-15T00:00:00.000Z",
+      "role": "Learner",
+      "bio": null,
+      "location": null
+    },
+    {
+      "id": 7,
+      "username": "qwqwq",
+      "email": "tripathy.sushobhan@gmail.com",
+      "password": "ddsvsevsedae",
+      "fullName": "qwqwq",
+      "track": null,
+      "avatarUrl": "https://i.pravatar.cc/150?u=qwqwq",
+      "joinDate": "2025-07-29T16:59:16.708Z",
+      "role": "Learner",
+      "bio": null,
+      "location": null
+    }
+  ],
+  "courses": [
+    {
+      "id": "101",
+      "title": "Google Data Analytics Course-1",
+      "subtitle": "Become a Prompt Engineering Expert. Master prompt engineering patterns, techniques, and approaches to effectively leverage Generative AI",
+      "authorId": 2,
+      "provider": {
+        "name": "Google",
+        "logoUrl": "https://i.imgur.com/your-google-logo.png"
+      },
+      "thumbnailUrl": "https://i.imgur.com/3q6CqYq.png",
+      "rating": 4.8,
+      "reviewCount": 1278,
+      "enrollmentCount": 45908,
+      "difficulty": "Beginner",
+      "durationText": "05 Weeks",
+      "skills": [
+        "Prompt Engineering",
+        "MS Excel",
+        "Data Ethics",
+        "Document Management",
+        "Data Analysis"
+      ],
+      "whatYoullLearn": [
+        "Gain an immersive understanding of the questions and processes used by a junior or associate data analyst in their day-to-day job.",
+        "Learn key analytical skills (data cleaning, analysis, & visualization) and tools (spreadsheets, SQL, R programming, Tableau).",
+        "Understand how to clean and organize data for analysis, and complete analysis and calculations using spreadsheets, SQL, and R programming."
+      ],
+      "requirements": [
+        "No experience required. If you can use a web browser, you are good to go!"
+      ],
+      "status": "Published",
+      "publishedDate": "2023-05-20T00:00:00.000Z"
+    },
+    {
+      "id": "102",
+      "title": "Python for Data Science, AI & Development",
+      "subtitle": "Master Python for data science and AI applications.",
+      "authorId": 2,
+      "provider": {
+        "name": "LinkedIn",
+        "logoUrl": "https://i.imgur.com/your-linkedin-logo.png"
+      },
+      "thumbnailUrl": "https://i.imgur.com/Y8L4En5.png",
+      "rating": 4.5,
+      "reviewCount": 133000,
+      "enrollmentCount": 635,
+      "difficulty": "Beginner",
+      "durationText": "6 months",
+      "skills": [
+        "Spreadsheet",
+        "Data Analysis",
+        "SQL",
+        "Data Visualization",
+        "Data C..."
+      ],
+      "whatYoullLearn": [],
+      "requirements": [],
+      "status": "Published",
+      "publishedDate": "2023-09-01T00:00:00.000Z"
+    },
+    {
+      "id": "103",
+      "title": "Big Data Visualization",
+      "subtitle": "Learn to visualize and present complex data sets effectively.",
+      "authorId": 5,
+      "provider": {
+        "name": "LinkedIn",
+        "logoUrl": "https://i.imgur.com/your-linkedin-logo.png"
+      },
+      "thumbnailUrl": "https://i.imgur.com/nNn1y4J.png",
+      "rating": 4.3,
+      "reviewCount": 133000,
+      "enrollmentCount": 635,
+      "difficulty": "Intermediate",
+      "durationText": "6 months",
+      "skills": [
+        "Tableau",
+        "PowerBI",
+        "D3.js",
+        "Data Storytelling"
+      ],
+      "whatYoullLearn": [],
+      "requirements": [],
+      "status": "Published",
+      "publishedDate": "2023-11-15T00:00:00.000Z"
+    },
+    {
+      "id": "104",
+      "title": "Introduction to Cloud Computing",
+      "subtitle": "Get a foundational understanding of cloud concepts.",
+      "authorId": 2,
+      "provider": {
+        "name": "Google",
+        "logoUrl": "https://i.imgur.com/your-google-logo.png"
+      },
+      "thumbnailUrl": "https://i.imgur.com/gK9fI5P.png",
+      "rating": 4.9,
+      "reviewCount": 98000,
+      "enrollmentCount": 550,
+      "difficulty": "Beginner",
+      "durationText": "4 weeks",
+      "skills": [
+        "Cloud Concepts",
+        "AWS",
+        "Azure",
+        "GCP"
+      ],
+      "whatYoullLearn": [],
+      "requirements": [],
+      "status": "Published",
+      "publishedDate": "2022-10-10T00:00:00.000Z"
+    }
+  ],
+  "curriculum": {
+    "101": [
+      {
+        "id": 201,
+        "title": "Section 1: Introduction",
+        "lectures": [
+          {
+            "id": 301,
+            "title": "Course Overview",
+            "type": "Text",
+            "durationMinutes": 3,
+            "content": {
+              "htmlContent": "<h1>Welcome!</h1><p>In this course you will learn...</p>"
+            }
+          },
+          {
+            "id": 302,
+            "title": "Google Analytics Overview",
+            "type": "Video",
+            "durationMinutes": 8,
+            "content": {
+              "videoUrl": "path/to/video1.mp4"
+            }
+          },
+          {
+            "id": 303,
+            "title": "How to Set Up a Google Analytics Demo Account",
+            "type": "Video",
+            "durationMinutes": 6,
+            "content": {
+              "videoUrl": "path/to/video2.mp4"
+            }
+          },
+          {
+            "id": 304,
+            "title": "Google Analytics Dictionary - The Top 50 Terms to Know",
+            "type": "PDF",
+            "durationMinutes": 10,
+            "content": {
+              "fileUrl": "path/to/dictionary.pdf"
+            }
+          }
+        ]
+      },
+      {
+        "id": 202,
+        "title": "Section 2: How To Analysis Reports & Increase Traffic And Sales",
+        "lectures": [
+          {
+            "id": 305,
+            "title": "Analyzing Audience Reports",
+            "type": "Video",
+            "durationMinutes": 12,
+            "content": {
+              "videoUrl": "path/to/video3.mp4"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "quizzes": {
+    "101": [
+      {
+        "id": 401,
+        "questionText": "In data analytics, noise is ____.",
+        "options": [
+          {
+            "text": "fields that are necessary for reporting and visualization",
+            "isCorrect": false
+          },
+          {
+            "text": "fields and data types",
+            "isCorrect": false
+          },
+          {
+            "text": "data that is not meaningful for reporting",
+            "isCorrect": true
+          },
+          {
+            "text": "timing and calculations",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": 402,
+        "questionText": "Your customer table has a column titled Customer Type. How does this most likely relate to your company’s business rules?",
+        "options": [
+          {
+            "text": "There is a business rule that defines what a Customer Type is.",
+            "isCorrect": false
+          },
+          {
+            "text": "There is a business rule that specifies how the table is set up.",
+            "isCorrect": true
+          },
+          {
+            "text": "This level of detail is usually beyond what a business rule calls for.",
+            "isCorrect": false
+          },
+          {
+            "text": "There is a business ranking Leads by number of orders.",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": 403,
+        "questionText": "Why are business rules important?",
+        "options": [
+          {
+            "text": "All of these answers",
+            "isCorrect": true
+          },
+          {
+            "text": "They help define the data.",
+            "isCorrect": false
+          },
+          {
+            "text": "They impact the timing of data.",
+            "isCorrect": false
+          },
+          {
+            "text": "They drive the necessary calculations.",
+            "isCorrect": false
+          }
+        ]
+      }
+    ]
+  },
+  "reviews": {
+    "101": [
+      {
+        "userId": 3,
+        "rating": 4.8,
+        "comment": "The Google Data Analytics course was a pivotal moment in my career. I went from having a basic understanding of spreadsheets to confidently performing complex queries in SQL and building amazing dashboards in Tableau."
+      },
+      {
+        "userId": 4,
+        "rating": 4.7,
+        "comment": "This data analytics program was a game-changer. The curriculum is incredibly well-structured, taking you from the basics of data cleaning to advanced machine learning concepts."
+      }
+    ]
+  },
+  "userEnrollments": {
+    "1": [
+      {
+        "courseId": 101,
+        "progressPercent": 21
+      },
+      {
+        "courseId": 103,
+        "progressPercent": 10
+      },
+      {
+        "courseId": 104,
+        "progressPercent": 80
+      }
+    ],
+    "3": [
+      {
+        "courseId": 101,
+        "progressPercent": 100
+      },
+      {
+        "courseId": 102,
+        "progressPercent": 50
+      }
+    ],
+    "4": [
+      {
+        "courseId": 101,
+        "progressPercent": 100
+      }
+    ]
+  },
+  "banners": [
+    {
+      "id": "501",
+      "imageUrl": "https://i.imgur.com/your-banner-1.png",
+      "status": "active",
+      "scheduleDate": null,
+      "expiryDate": null
+    },
+    {
+      "id": "502",
+      "imageUrl": "https://i.imgur.com/your-banner-2.png",
+      "status": "scheduled",
+      "scheduleDate": "2024-12-01T00:00:00.000Z",
+      "expiryDate": "2024-12-25T23:59:59.000Z"
+    },
+    {
+      "id": "503",
+      "imageUrl": "https://i.imgur.com/your-banner-3.png",
+      "status": "inactive",
+      "scheduleDate": null,
+      "expiryDate": null
+    }
+  ]
+}

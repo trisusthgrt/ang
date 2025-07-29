@@ -1,0 +1,154 @@
+<div class="auth-container">
+  <div class="auth-layout">
+    <!-- Left Side - Illustration -->
+    <div class="left-panel">
+      <div class="illustration">
+        <!-- Educational Learning Illustration -->
+        <svg viewBox="0 0 400 300" class="learning-illustration">
+          <!-- Computer Monitor -->
+          <rect x="120" y="100" width="160" height="100" rx="8" fill="#2D3748" stroke="#4A5568" stroke-width="2"/>
+          <rect x="130" y="110" width="140" height="80" fill="#1A202C"/>
+          
+          <!-- Screen Content -->
+          <rect x="140" y="120" width="120" height="8" fill="#4299E1"/>
+          <rect x="140" y="135" width="100" height="6" fill="#68D391"/>
+          <rect x="140" y="150" width="80" height="6" fill="#F6AD55"/>
+          
+          <!-- Play Button -->
+          <circle cx="200" cy="160" r="15" fill="#E53E3E"/>
+          <polygon points="195,155 195,165 205,160" fill="white"/>
+          
+          <!-- Monitor Stand -->
+          <rect x="190" y="200" width="20" height="30" fill="#4A5568"/>
+          <rect x="170" y="225" width="60" height="8" fill="#4A5568"/>
+          
+          <!-- Books -->
+          <rect x="60" y="210" width="40" height="25" fill="#4299E1"/>
+          <rect x="65" y="205" width="40" height="25" fill="#F6AD55"/>
+          <rect x="70" y="200" width="40" height="25" fill="#68D391"/>
+          
+          <!-- Person 1 (Left) -->
+          <circle cx="80" cy="170" r="15" fill="#F7FAFC"/>
+          <rect x="70" y="185" width="20" height="30" fill="#4299E1"/>
+          <rect x="75" y="190" width="10" height="20" fill="#2D3748"/>
+          
+          <!-- Person 2 (Right) -->
+          <circle cx="320" cy="180" r="12" fill="#F7FAFC"/>
+          <rect x="312" y="192" width="16" height="25" fill="#E53E3E"/>
+          <rect x="315" y="195" width="10" height="15" fill="#2D3748"/>
+          
+          <!-- Desk/Table -->
+          <rect x="310" y="210" width="25" height="15" fill="#F6AD55"/>
+          
+          <!-- Floating Elements -->
+          <circle cx="90" cy="80" r="8" fill="#68D391" opacity="0.7"/>
+          <rect x="300" y="60" width="16" height="12" fill="#4299E1" opacity="0.7"/>
+          <circle cx="340" cy="90" r="6" fill="#F6AD55" opacity="0.7"/>
+          
+          <!-- Lightbulb -->
+          <circle cx="320" cy="50" r="8" fill="#F6E05E"/>
+          <rect x="318" y="58" width="4" height="6" fill="#D69E2E"/>
+          
+          <!-- Chat/Message Bubbles -->
+          <ellipse cx="160" cy="70" rx="20" ry="12" fill="#E2E8F0"/>
+          <ellipse cx="250" cy="85" rx="18" ry="10" fill="#E2E8F0"/>
+          
+          <!-- Gear/Settings Icon -->
+          <circle cx="70" cy="60" r="12" fill="#A0AEC0"/>
+          <circle cx="70" cy="60" r="6" fill="#2D3748"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Right Side - Login Form -->
+    <div class="right-panel">
+      <div class="form-container">
+        <div class="form-header">
+          <h1 class="product-name">Product Name</h1>
+          <h2 class="welcome-title">Welcome!</h2>
+          <p class="welcome-subtitle">Sign in to your Learning account</p>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div *ngIf="successMessage" class="message success-message">
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="message error-message">
+          {{ errorMessage }}
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+          <!-- Username Field -->
+          <div class="form-group">
+            <input 
+              type="text" 
+              id="username"
+              formControlName="username"
+              placeholder="User Name or Email"
+              class="form-input"
+              [class.invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+              [disabled]="isLoading"
+            >
+            <small class="helper-text">Try: hshimron or harry.shimron&#64;example.com (password: hashed_password)</small>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <div class="password-field">
+              <input 
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                formControlName="password"
+                placeholder="Password"
+                class="form-input"
+                [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                [disabled]="isLoading"
+              >
+              <button 
+                type="button" 
+                class="password-toggle"
+                (click)="togglePasswordVisibility()"
+                [disabled]="isLoading"
+              >
+                <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg *ngIf="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Remember Me & Forgot Password -->
+          <div class="form-options">
+            <label class="checkbox-container">
+              <input type="checkbox" formControlName="rememberMe" [disabled]="isLoading">
+              <span class="checkmark"></span>
+              Remember Me
+            </label>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            class="submit-btn"
+            [disabled]="loginForm.invalid || isLoading"
+          >
+            <span *ngIf="isLoading" class="loading-spinner"></span>
+            {{ isLoading ? 'Signing In...' : 'SIGN IN' }}
+          </button>
+
+          <!-- Register Link -->
+          <div class="auth-switch">
+            <span>Don't have account yet? </span>
+            <a (click)="navigateToRegister()" class="switch-link">Register now</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> 

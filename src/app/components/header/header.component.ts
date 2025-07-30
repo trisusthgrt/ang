@@ -119,8 +119,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateToAdminConsole() {
-    this.closeUserDropdown();
-    console.log('Navigate to admin console');
+    this.showProfileDropdown = false;
+    this.router.navigate(['/admin']);
   }
 
   navigateToMyCourses() {

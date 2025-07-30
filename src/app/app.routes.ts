@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -37,5 +38,16 @@ export const routes: Routes = [
   {
     path: 'create-course',
     loadComponent: () => import('./components/course-create/course-create.component').then(m => m.CourseCreateComponent)
+  },
+  // Admin routes - protected by AdminGuard
+  {
+    path: 'admin',
+    canActivate: [AdminGuard],
+    loadComponent: () => import('./components/admin-console/admin-console.component').then(m => m.AdminConsoleComponent)
+  },
+  {
+    path: 'admin/users',
+    canActivate: [AdminGuard],
+    loadComponent: () => import('./components/user-management/user-management.component').then(m => m.UserManagementComponent)
   }
 ];

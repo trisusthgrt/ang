@@ -1,0 +1,43 @@
+<div class="admin-console-page">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Main Content -->
+  <div class="admin-console-content">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-container">
+        
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+          <a (click)="navigateToHome()" class="breadcrumb-link">Home</a>
+          <svg class="breadcrumb-separator" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+          <span class="breadcrumb-current">Admin Console</span>
+        </nav>
+
+        <!-- Page Title -->
+        <h1 class="page-title">Admin Console</h1>
+      </div>
+    </div>
+
+    <!-- Admin Cards Grid -->
+    <div class="admin-cards-section">
+      <div class="cards-container">
+        <div class="admin-cards-grid">
+          <app-admin-card 
+            *ngFor="let card of adminCards"
+            [icon]="card.icon"
+            [title]="card.title"
+            [count]="card.count"
+            [isPlaceholder]="card.isPlaceholder || false"
+            (cardClick)="onCardClick(card)">
+          </app-admin-card>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

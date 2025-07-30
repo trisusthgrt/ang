@@ -1,0 +1,104 @@
+.admin-card {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 32px 24px;
+  text-align: center;
+  transition: all 0.2s ease;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      border-color: #3B82F6;
+    }
+
+    &:active {
+      transform: translateY(-2px);
+    }
+  }
+
+  &.placeholder {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    .card-icon svg {
+      stroke: #D1D5DB;
+    }
+
+    .card-title {
+      color: #9CA3AF;
+    }
+  }
+
+  .card-icon {
+    flex-shrink: 0;
+
+    svg {
+      stroke: #6B7280;
+      stroke-width: 2;
+      transition: stroke 0.2s ease;
+    }
+  }
+
+  .card-content {
+    text-align: center;
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1F2937;
+      margin: 0 0 8px 0;
+      transition: color 0.2s ease;
+    }
+
+    .card-count {
+      font-size: 32px;
+      font-weight: 700;
+      color: #3B82F6;
+      line-height: 1;
+    }
+  }
+
+  // Hover effects for clickable cards
+  &.clickable:hover {
+    .card-icon svg {
+      stroke: #3B82F6;
+    }
+
+    .card-title {
+      color: #3B82F6;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .admin-card {
+    padding: 24px 16px;
+    min-height: 160px;
+
+    .card-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .card-content {
+      .card-title {
+        font-size: 16px;
+      }
+
+      .card-count {
+        font-size: 28px;
+      }
+    }
+  }
+}

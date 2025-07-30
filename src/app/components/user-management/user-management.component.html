@@ -1,0 +1,374 @@
+<div class="user-management-page">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading users...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading" class="user-management-content">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-container">
+        
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+          <a (click)="navigateToHome()" class="breadcrumb-link">Home</a>
+          <svg class="breadcrumb-separator" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+          <a (click)="navigateToAdminConsole()" class="breadcrumb-link">Admin Console</a>
+          <svg class="breadcrumb-separator" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+          <span class="breadcrumb-current">User Management</span>
+        </nav>
+
+        <!-- Page Title -->
+        <h1 class="page-title">Admin Console</h1>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+          <button *ngFor="let tab of tabs"
+                  class="tab-btn"
+                  [class.active]="activeTab === tab.id"
+                  (click)="onTabClick(tab.id)">
+            {{ tab.label }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- User Management Tab Content -->
+    <div *ngIf="activeTab === 'user-management'" class="tab-content">
+      <div class="content-container">
+
+        <!-- Controls Section -->
+        <div class="controls-section">
+          
+          <!-- Search Input -->
+          <div class="search-container">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input
+              type="text"
+              placeholder="Search User"
+              class="search-input"
+              [(ngModel)]="searchQuery"
+              (input)="onSearchChange()">
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="sort-container">
+            <label class="sort-label">Sort:</label>
+            <select
+              class="sort-select"
+              [(ngModel)]="sortBy"
+              (change)="onSortChange()">
+              <option *ngFor="let option of sortOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Users Table -->
+        <div class="table-section">
+          <div class="table-container">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>User Name</th>
+                  <th>Roles</th>
+                  <th>Joined Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of filteredUsers" class="user-row">
+                  <td class="user-name-cell">
+                    <div class="user-info">
+                      <img [src]="user.avatarUrl" [alt]="user.fullName" class="user-avatar">
+                      <div class="user-details">
+                        <div class="user-name">{{ user.fullName }}</div>
+                        <div class="user-email">{{ user.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="roles-cell">
+                    <div class="roles-container">
+                      <span *ngFor="let role of parseUserRoles(user.role)" 
+                            class="role-tag"
+                            [ngClass]="getRoleClasses(role)">
+                        {{ role }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="date-cell">
+                    {{ formatDate(user.joinDate) }}
+                  </td>
+                  <td class="actions-cell">
+                    <button class="edit-btn" (click)="openEditUserModal(user)">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      </svg>
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section">
+          <div class="pagination-container">
+            
+            <div class="pagination-info">
+              <span>TOTAL RECORDS: {{ totalRecords }}</span>
+            </div>
+
+            <div class="pagination-controls">
+              
+              <!-- Previous and First buttons -->
+              <button class="pagination-btn" 
+                      [disabled]="currentPage === 1"
+                      (click)="onPageChange(1)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="11,17 6,12 11,7"></polyline>
+                  <polyline points="18,17 13,12 18,7"></polyline>
+                </svg>
+              </button>
+
+              <button class="pagination-btn" 
+                      [disabled]="currentPage === 1"
+                      (click)="onPageChange(currentPage - 1)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="15,18 9,12 15,6"></polyline>
+                </svg>
+              </button>
+
+              <!-- Page numbers -->
+              <button *ngFor="let page of getPageNumbers()"
+                      class="pagination-btn page-number"
+                      [class.active]="page === currentPage"
+                      (click)="onPageChange(page)">
+                {{ page }}
+              </button>
+
+              <!-- Next and Last buttons -->
+              <button class="pagination-btn" 
+                      [disabled]="currentPage === totalPages"
+                      (click)="onPageChange(currentPage + 1)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="9,18 15,12 9,6"></polyline>
+                </svg>
+              </button>
+
+              <button class="pagination-btn" 
+                      [disabled]="currentPage === totalPages"
+                      (click)="onPageChange(totalPages)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="6,17 11,12 6,7"></polyline>
+                  <polyline points="13,17 18,12 13,7"></polyline>
+                </svg>
+              </button>
+
+            </div>
+
+            <div class="items-per-page">
+              <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()" class="per-page-select">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+              <span>/ Page</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Other Tab Contents (Placeholder) -->
+    <div *ngIf="activeTab !== 'user-management'" class="tab-content">
+      <div class="content-container">
+        <div class="placeholder-content">
+          <h3>{{ activeTab === 'dynamic-banner' ? 'Dynamic Banner' : 'Settings' }} Content</h3>
+          <p>This section will be implemented in future updates.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Edit User Modal -->
+  <div *ngIf="showEditUserModal && selectedUser" class="modal-overlay" (click)="closeEditUserModal()">
+    <div class="edit-user-modal" (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3>Edit User</h3>
+        <button class="close-btn" (click)="closeEditUserModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- User Summary -->
+      <div class="user-summary">
+        <div class="user-summary-content">
+          <img [src]="selectedUser.avatarUrl" [alt]="selectedUser.fullName" class="summary-avatar">
+          <div class="summary-info">
+            <h4 class="summary-name">{{ selectedUser.fullName }}</h4>
+            <div class="summary-email">{{ selectedUser.email }}</div>
+            <div class="summary-details">
+              {{ selectedUser.location || 'Location not specified' }} | Since {{ formatDate(selectedUser.joinDate) }}
+            </div>
+          </div>
+          <div class="summary-stats">
+            <div class="stat-item">
+              <div class="stat-label">Author</div>
+              <div class="stat-value">1234</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Blogger</div>
+              <div class="stat-value">1234</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Tabs -->
+      <div class="modal-tabs">
+        <button *ngFor="let tab of editTabs"
+                class="modal-tab-btn"
+                [class.active]="activeEditTab === tab.id"
+                (click)="onEditTabClick(tab.id)">
+          {{ tab.label }}
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="modal-content">
+        
+        <!-- Profile Tab -->
+        <div *ngIf="activeEditTab === 'profile'" class="edit-form">
+          
+          <!-- Name Fields -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <div class="name-inputs">
+                <input type="text" 
+                       class="form-input" 
+                       placeholder="Harry"
+                       [(ngModel)]="selectedUser.editedName">
+                <input type="text" 
+                       class="form-input" 
+                       placeholder="Middle Name">
+                <input type="text" 
+                       class="form-input" 
+                       placeholder="Shimron">
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" 
+                   class="form-input" 
+                   placeholder="username@mail.com"
+                   [(ngModel)]="selectedUser.editedEmail">
+          </div>
+
+          <!-- Roles -->
+          <div class="form-group">
+            <label class="form-label">Roles</label>
+            <div class="roles-selection">
+              <button *ngFor="let role of availableRoles"
+                      class="role-btn"
+                      [class.selected]="isRoleSelected(role)"
+                      (click)="toggleRole(role)">
+                {{ role }}
+              </button>
+            </div>
+          </div>
+
+          <!-- User Bio -->
+          <div class="form-group">
+            <label class="form-label">User Bio</label>
+            <textarea class="form-textarea"
+                      rows="5"
+                      placeholder="Passionate writer and avid traveler, Alex Thompson shares insights from his adventures around the globe. With a background in journalism, he combines storytelling with a love for photography, capturing the essence of each destination. When not exploring new cultures, Alex enjoys reading historical fiction and experimenting with gourmet recipes."
+                      [(ngModel)]="selectedUser.editedBio">
+            </textarea>
+          </div>
+
+        </div>
+
+        <!-- Activities Tab -->
+        <div *ngIf="activeEditTab === 'activities'" class="activities-content">
+          
+          <div class="activities-stats">
+            <div class="stat-card">
+              <div class="stat-number">{{ getMockActivities().learningHours }}</div>
+              <div class="stat-label">Learning Hours</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">{{ getMockActivities().pendingCourses }}</div>
+              <div class="stat-label">Pending Courses</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">{{ getMockActivities().ratedCourses }}</div>
+              <div class="stat-label">Rated Courses</div>
+            </div>
+          </div>
+
+          <div class="learning-history">
+            <h4>Learning History</h4>
+            <div class="history-list">
+              <div *ngFor="let course of getMockActivities().learningHistory" class="history-item">
+                <div class="course-title">{{ course.title }}</div>
+                <div class="course-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="course.progress"></div>
+                  </div>
+                  <span class="progress-text">{{ course.progress }}% - {{ course.status }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="cancel-btn" (click)="closeEditUserModal()">
+          Cancel
+        </button>
+        <button class="save-btn" (click)="saveUserChanges()">
+          Save Changes
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

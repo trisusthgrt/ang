@@ -1,0 +1,89 @@
+.admin-console-page {
+  min-height: 100vh;
+  background: #F9FAFB;
+}
+
+// Page Header
+.page-header {
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+  
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 20px;
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+
+      .breadcrumb-link {
+        color: #3B82F6;
+        text-decoration: none;
+        font-size: 14px;
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: #2563EB;
+          text-decoration: underline;
+        }
+      }
+
+      .breadcrumb-separator {
+        color: #9CA3AF;
+        stroke-width: 2;
+      }
+
+      .breadcrumb-current {
+        color: #6B7280;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1F2937;
+      margin: 0;
+    }
+  }
+}
+
+// Admin Cards Section
+.admin-cards-section {
+  .cards-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .admin-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .page-header .header-container {
+    padding: 20px 16px;
+
+    .page-title {
+      font-size: 24px;
+    }
+  }
+
+  .admin-cards-section .cards-container {
+    padding: 24px 16px;
+  }
+
+  .admin-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

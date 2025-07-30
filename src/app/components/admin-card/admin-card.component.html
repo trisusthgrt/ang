@@ -1,0 +1,14 @@
+<div class="admin-card" 
+     [class.placeholder]="isPlaceholder"
+     [class.clickable]="!isPlaceholder"
+     (click)="onClick()">
+  
+  <div class="card-icon" [innerHTML]="getIconSvg()"></div>
+  
+  <div class="card-content">
+    <h3 class="card-title">{{ title }}</h3>
+    <div class="card-count" *ngIf="count !== undefined">
+      {{ count }}
+    </div>
+  </div>
+</div>

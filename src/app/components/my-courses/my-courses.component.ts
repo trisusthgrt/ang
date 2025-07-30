@@ -4,36 +4,38 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { HeaderComponent } from '../header/header.component';
+import { CourseCardComponent } from '../course-card/course-card.component';
 import { AuthService, User } from '../../services/auth.service';
 import { CourseService, CourseWithProgress } from '../../services/course.service';
 
 export interface AuthorCourse extends CourseWithProgress {
-  status: 'Published' | 'Draft' | 'Archived';
+  status: string;
   createdDate: string;
   lastUpdated: string;
+  description: string;
+  author: string;
 }
 
 @Component({
   selector: 'app-my-courses',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, CourseCardComponent],
   templateUrl: './my-courses.component.html',
   styleUrl: './my-courses.component.scss'
 })
 export class MyCoursesComponent implements OnInit, OnDestroy {
+  
   currentUser: User | null = null;
-  courses: AuthorCourse[] = [];
-  filteredCourses: AuthorCourse[] = [];
   isLoading = true;
-
+  
   // Tab management
-  activeTab: 'Published' | 'Draft' | 'Archived' = 'Published';
+  activeTab = 'published';
   tabs = [
-    { id: 'Published' as const, label: 'Published', count: 0 },
-    { id: 'Draft' as const, label: 'Draft', count: 0 },
-    { id: 'Archived' as const, label: 'Archived', count: 0 }
+    { id: 'published', label: 'Published', count: 0 },
+    { id: 'draft', label: 'Draft', count: 0 },
+    { id: 'archived', label: 'Archived', count: 0 }
   ];
-
+  
   // Search and sort
   searchQuery = '';
   sortBy = 'Latest';
@@ -44,7 +46,11 @@ export class MyCoursesComponent implements OnInit, OnDestroy {
     { value: 'A-Z', label: 'A-Z' },
     { value: 'Z-A', label: 'Z-A' }
   ];
-
+  
+  // Courses data
+  allCourses: AuthorCourse[] = [];
+  filteredCourses: AuthorCourse[] = [];
+  
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -54,14 +60,19 @@ export class MyCoursesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Check if user has access
     this.currentUser = this.authService.getCurrentUser();
     
+    if (!this.currentUser) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    // Check if user has Author or Admin role
     if (!this.isAuthorOrAdmin()) {
       this.router.navigate(['/dashboard']);
       return;
     }
-
+    
     this.loadAuthorCourses();
   }
 
@@ -75,77 +86,125 @@ export class MyCoursesComponent implements OnInit, OnDestroy {
   }
 
   private loadAuthorCourses() {
-    // Load published courses from localStorage
-    const publishedCourses = JSON.parse(localStorage.getItem('publishedCourses') || '[]');
+    this.isLoading = true;
     
-    // For demo purposes, we'll also create mock courses for the current author
     this.courseService.getAllCourses()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(allCourses => {
-        // Combine published courses with mock courses
-        const mockCourses = this.createMockAuthorCourses(allCourses.slice(0, 5));
-        const authorPublishedCourses = publishedCourses.map((course: any) => ({
-          ...course,
-          status: 'Published' as const,
-          createdDate: course.createdAt || new Date().toISOString(),
-          lastUpdated: course.updatedAt || new Date().toISOString(),
-          progressPercent: 0
-        }));
-        
-        this.courses = [...authorPublishedCourses, ...mockCourses];
-        this.updateTabCounts();
-        this.applyFiltersAndSort();
-        this.isLoading = false;
+      .subscribe({
+        next: (courses) => {
+          // Filter courses based on user role and convert to AuthorCourse
+          if (this.currentUser?.role === 'Admin') {
+            // Admin can see all courses
+            this.allCourses = courses.map(course => this.convertToAuthorCourse(course));
+          } else {
+            // Author can only see their own courses (simulate by taking first few)
+            this.allCourses = courses.slice(0, 3).map(course => this.convertToAuthorCourse(course));
+          }
+          
+          // Load published courses from localStorage (from course creation wizard)
+          this.loadPublishedCourses();
+          
+          this.updateTabCounts();
+          this.applyFilters();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading courses:', error);
+          this.isLoading = false;
+        }
       });
   }
 
-  private createMockAuthorCourses(allCourses: CourseWithProgress[]): AuthorCourse[] {
-    const statuses: Array<'Published' | 'Draft' | 'Archived'> = ['Published', 'Draft', 'Archived'];
-    
-    return allCourses.slice(0, 8).map((course, index) => ({
+  private convertToAuthorCourse(course: CourseWithProgress): AuthorCourse {
+    return {
       ...course,
-      status: statuses[index % 3],
-      createdDate: new Date(Date.now() - (index * 7 * 24 * 60 * 60 * 1000)).toISOString(),
-      lastUpdated: new Date(Date.now() - (index * 2 * 24 * 60 * 60 * 1000)).toISOString()
-    }));
+      status: this.getRandomStatus(),
+      createdDate: this.getRandomDate(),
+      lastUpdated: this.getRandomDate(),
+      description: course.subtitle || 'No description available',
+      author: course.provider?.name || 'Unknown Author'
+    };
+  }
+
+  private loadPublishedCourses() {
+    const publishedCourses = localStorage.getItem('publishedCourses');
+    if (publishedCourses) {
+      try {
+        const courses = JSON.parse(publishedCourses);
+        courses.forEach((course: any) => {
+          this.allCourses.push({
+            ...course,
+            progressPercent: 0,
+            status: 'published',
+            createdDate: course.createdAt || new Date().toISOString(),
+            lastUpdated: course.updatedAt || new Date().toISOString(),
+            description: course.description || 'No description available',
+            author: course.author || 'Unknown Author'
+          });
+        });
+      } catch (error) {
+        console.error('Error loading published courses:', error);
+      }
+    }
+  }
+
+  private getRandomStatus(): string {
+    const statuses = ['published', 'draft', 'archived'];
+    return statuses[Math.floor(Math.random() * statuses.length)];
+  }
+
+  private getRandomDate(): string {
+    const start = new Date(2024, 0, 1);
+    const end = new Date();
+    const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    return date.toISOString();
   }
 
   private updateTabCounts() {
     this.tabs.forEach(tab => {
-      tab.count = this.courses.filter(course => course.status === tab.id).length;
+      tab.count = this.allCourses.filter(course => course.status === tab.id).length;
     });
   }
 
-  onTabClick(tabId: 'Published' | 'Draft' | 'Archived') {
-    this.activeTab = tabId;
-    this.applyFiltersAndSort();
+  // Navigation
+  navigateToHome() {
+    this.router.navigate(['/dashboard']);
   }
 
+  // Tab management
+  onTabClick(tabId: string) {
+    this.activeTab = tabId;
+    this.applyFilters();
+  }
+
+  // Search and sort
   onSearchChange() {
-    this.applyFiltersAndSort();
+    this.applyFilters();
   }
 
   onSortChange() {
-    this.applyFiltersAndSort();
+    this.applyFilters();
   }
 
-  private applyFiltersAndSort() {
-    // Filter by tab
-    let filtered = this.courses.filter(course => course.status === this.activeTab);
-
+  private applyFilters() {
+    let filtered = this.allCourses;
+    
+    // Filter by tab (status)
+    filtered = filtered.filter(course => course.status === this.activeTab);
+    
     // Filter by search query
     if (this.searchQuery.trim()) {
       const query = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(course => 
+      filtered = filtered.filter(course =>
         course.title.toLowerCase().includes(query) ||
-        course.subtitle.toLowerCase().includes(query) ||
-        course.provider.name.toLowerCase().includes(query)
+        course.description.toLowerCase().includes(query) ||
+        course.author.toLowerCase().includes(query)
       );
     }
-
+    
     // Sort courses
     filtered = this.sortCourses(filtered);
-
+    
     this.filteredCourses = filtered;
   }
 
@@ -155,9 +214,9 @@ export class MyCoursesComponent implements OnInit, OnDestroy {
         case 'Latest':
           return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
         case 'Highest Rating':
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         case 'Highest Reviewed':
-          return b.reviewCount - a.reviewCount;
+          return (b.reviewCount || 0) - (a.reviewCount || 0);
         case 'A-Z':
           return a.title.localeCompare(b.title);
         case 'Z-A':
@@ -168,39 +227,32 @@ export class MyCoursesComponent implements OnInit, OnDestroy {
     });
   }
 
-  navigateToHome() {
-    this.router.navigate(['/dashboard']);
-  }
-
+  // Course actions
   createNewCourse() {
     this.router.navigate(['/create-course']);
   }
 
   onCourseCardClick(course: AuthorCourse) {
-    // Navigate to course editing/management page or course detail
-    if (course.status === 'Published') {
-      this.router.navigate(['/course', course.id]);
-    } else {
-      // For draft/archived, would typically navigate to course editor
-      alert(`Edit course: ${course.title} - Course editor coming soon!`);
-    }
+    this.router.navigate(['/course', course.id]);
   }
 
+  // Utility methods
   getStatusBadgeClass(status: string): string {
     switch (status) {
-      case 'Published': return 'status-published';
-      case 'Draft': return 'status-draft';
-      case 'Archived': return 'status-archived';
-      default: return '';
+      case 'published': return 'status-published';
+      case 'draft': return 'status-draft';
+      case 'archived': return 'status-archived';
+      default: return 'status-published';
     }
   }
 
   formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 }

@@ -1,323 +1,445 @@
-.dashboard-container {
+.dashboard-page {
   min-height: 100vh;
   background: #F9FAFB;
 }
 
-.dashboard-content {
-  padding-top: 0;
+// Banner Carousel Section
+.banner-carousel-section {
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+
+  .banner-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+
+    .banner-carousel {
+      position: relative;
+      height: 200px;
+
+      .banner-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+
+        &.active {
+          opacity: 1;
+        }
+
+        .banner-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .banner-content {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+          color: white;
+          padding: 40px 32px 32px;
+
+          .banner-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+          }
+
+          .banner-description {
+            font-size: 16px;
+            margin: 0;
+            opacity: 0.9;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+          }
+        }
+      }
+    }
+
+    .banner-navigation {
+      .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 10;
+
+        &:hover {
+          background: rgba(255, 255, 255, 1);
+          transform: translateY(-50%) scale(1.1);
+        }
+
+        &.prev-btn {
+          left: 16px;
+        }
+
+        &.next-btn {
+          right: 16px;
+        }
+
+        svg {
+          stroke-width: 2;
+          color: #374151;
+        }
+      }
+    }
+
+    .banner-indicators {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+
+      .indicator-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.active,
+        &:hover {
+          background: rgba(255, 255, 255, 1);
+          transform: scale(1.2);
+        }
+      }
+    }
+  }
 }
 
-.content-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px 24px;
-}
-
+// Loading State
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  gap: 16px;
+  color: #6B7280;
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border: 3px solid #E5E7EB;
     border-top: 3px solid #3B82F6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-  }
-
-  p {
-    color: #6B7280;
-    font-size: 16px;
+    margin-bottom: 16px;
   }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.dashboard-sections {
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
+// Main Dashboard Content
+.dashboard-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
 // Statistics Section
 .stats-section {
-  .stats-cards {
+  margin-bottom: 48px;
+
+  .stats-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 24px;
-    margin-bottom: 0;
-  }
-}
 
-.stat-card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  }
-
-  .card-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .stat-info {
-    flex: 1;
-
-    .stat-number {
-      font-size: 48px;
-      font-weight: 700;
-      color: #1F2937;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .stat-label {
-      font-size: 16px;
-      color: #6B7280;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    .stat-link {
-      color: #3B82F6;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 20px;
 
       &:hover {
-        text-decoration: underline;
+        transform: translateY(-2px);
+      }
+
+      .stat-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        svg {
+          stroke-width: 2;
+        }
+      }
+
+      .stat-content {
+        flex: 1;
+
+        h3 {
+          font-size: 16px;
+          font-weight: 600;
+          color: #6B7280;
+          margin: 0 0 8px 0;
+        }
+
+        .stat-number {
+          font-size: 32px;
+          font-weight: 700;
+          margin: 0 0 8px 0;
+        }
+
+        .stat-link {
+          font-size: 14px;
+          font-weight: 500;
+          text-decoration: none;
+          transition: opacity 0.2s ease;
+
+          &:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+          }
+        }
+      }
+
+      // Theme colors for each card
+      &.goals-card {
+        .stat-icon {
+          background: #FEF3C7;
+          color: #D97706;
+        }
+
+        .stat-number {
+          color: #D97706;
+        }
+
+        .stat-link {
+          color: #D97706;
+        }
+      }
+
+      &.courses-card {
+        .stat-icon {
+          background: #DBEAFE;
+          color: #2563EB;
+        }
+
+        .stat-number {
+          color: #2563EB;
+        }
+
+        .stat-link {
+          color: #2563EB;
+        }
+      }
+
+      &.certificates-card {
+        .stat-icon {
+          background: #D1FAE5;
+          color: #059669;
+        }
+
+        .stat-number {
+          color: #059669;
+        }
+
+        .stat-link {
+          color: #059669;
+        }
       }
     }
-  }
-
-  .stat-visual {
-    flex-shrink: 0;
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .stat-icon {
-      width: 100%;
-      height: 100%;
-    }
-  }
-
-  // Card-specific styling
-  &.goals-card {
-    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
-    border-left: 4px solid #10B981;
-  }
-
-  &.enrolled-card {
-    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-    border-left: 4px solid #3B82F6;
-  }
-
-  &.certificates-card {
-    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-    border-left: 4px solid #F59E0B;
   }
 }
 
 // Courses Section
 .courses-section {
-  .section-header {
-    margin-bottom: 24px;
+  margin-bottom: 48px;
 
-    h2 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1F2937;
-      margin: 0;
+  .courses-container {
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+
+      .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1F2937;
+        margin: 0;
+      }
+
+      .carousel-controls {
+        display: flex;
+        gap: 8px;
+
+        .carousel-btn {
+          width: 40px;
+          height: 40px;
+          background: white;
+          border: 1px solid #E5E7EB;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover:not(:disabled) {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+
+          svg {
+            stroke-width: 2;
+            color: #6B7280;
+          }
+        }
+      }
     }
-  }
-}
 
-.carousel-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+    .courses-list {
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 8px;
 
-.carousel-btn {
-  background: white;
-  border: 2px solid #E5E7EB;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-  z-index: 2;
+      // Hide scrollbar
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
-  &:hover:not(:disabled) {
-    border-color: #3B82F6;
-    background: #3B82F6;
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  }
+      -ms-overflow-style: none;
+      scrollbar-width: none;
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: #F3F4F6;
-  }
-
-  svg {
-    stroke-width: 2;
-  }
-}
-
-.carousel {
-  flex: 1;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  .carousel-track {
-    display: flex;
-    gap: 20px;
-    padding: 4px 0 20px 0;
-    min-height: 320px;
-  }
-
-  .carousel-item {
-    flex-shrink: 0;
-  }
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 280px;
-  text-align: center;
-  color: #9CA3AF;
-
-  svg {
-    margin-bottom: 16px;
-    stroke-width: 1.5;
-  }
-
-  p {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 500;
-
-    &.empty-subtitle {
-      font-size: 14px;
-      font-weight: 400;
-      margin-top: 4px;
+      app-course-card {
+        flex-shrink: 0;
+        width: 320px;
+      }
     }
   }
 }
 
 // Responsive Design
 @media (max-width: 1024px) {
-  .content-wrapper {
-    padding: 24px 16px;
+  .dashboard-content {
+    padding: 32px 16px;
   }
 
-  .dashboard-sections {
-    gap: 36px;
-  }
-
-  .stats-cards {
+  .stats-container {
     grid-template-columns: 1fr;
-    gap: 16px;
   }
 
-  .stat-card {
-    padding: 20px;
+  .banner-carousel-section .banner-container {
+    .banner-content {
+      padding: 24px 20px 20px;
 
-    .stat-number {
-      font-size: 36px;
+      .banner-title {
+        font-size: 24px;
+      }
+
+      .banner-description {
+        font-size: 14px;
+      }
     }
 
-    .stat-visual {
-      width: 60px;
-      height: 60px;
+    .banner-navigation .nav-btn {
+      width: 40px;
+      height: 40px;
+
+      &.prev-btn {
+        left: 12px;
+      }
+
+      &.next-btn {
+        right: 12px;
+      }
     }
   }
 }
 
 @media (max-width: 768px) {
-  .content-wrapper {
-    padding: 20px 12px;
-  }
+  .courses-section .courses-container {
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
 
-  .carousel-container {
-    gap: 8px;
-  }
+      .section-title {
+        font-size: 20px;
+      }
+    }
 
-  .carousel-btn {
-    width: 40px;
-    height: 40px;
+    .courses-list {
+      gap: 16px;
 
-    svg {
-      width: 16px;
-      height: 16px;
+      app-course-card {
+        width: 280px;
+      }
     }
   }
 
-  .carousel .carousel-track {
-    gap: 16px;
+  .stat-card {
+    padding: 24px 20px;
+
+    .stat-icon {
+      width: 56px;
+      height: 56px;
+    }
+
+    .stat-content {
+      .stat-number {
+        font-size: 28px;
+      }
+    }
   }
 
-  .courses-section .section-header h2 {
-    font-size: 24px;
+  .banner-carousel-section .banner-container {
+    .banner-carousel {
+      height: 160px;
+    }
+
+    .banner-content {
+      padding: 16px;
+
+      .banner-title {
+        font-size: 20px;
+      }
+
+      .banner-description {
+        font-size: 13px;
+      }
+    }
   }
 }
 
-@media (max-width: 640px) {
-  .carousel-btn {
-    display: none; // Hide carousel buttons on mobile
-  }
-
-  .carousel {
-    margin: 0 -12px;
-    padding: 0 12px;
-  }
-
-  .stat-card .card-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-
-    .stat-visual {
-      align-self: flex-end;
-    }
-  }
+// Spinner Animation
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 } 

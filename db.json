@@ -385,25 +385,54 @@
   },
   "banners": [
     {
-      "id": "501",
-      "imageUrl": "https://i.imgur.com/your-banner-1.png",
-      "status": "active",
-      "scheduleDate": null,
-      "expiryDate": null
+      "id": "banner1",
+      "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=300&fit=crop",
+      "title": "Learn Advanced Programming",
+      "description": "Master cutting-edge technologies with our expert-led courses",
+      "visibility": "now",
+      "isActive": true,
+      "createdAt": "2024-01-15T00:00:00.000Z",
+      "updatedAt": "2024-01-15T00:00:00.000Z",
+      "order": 0
     },
     {
-      "id": "502",
-      "imageUrl": "https://i.imgur.com/your-banner-2.png",
-      "status": "scheduled",
-      "scheduleDate": "2024-12-01T00:00:00.000Z",
-      "expiryDate": "2024-12-25T23:59:59.000Z"
+      "id": "banner2",
+      "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=300&fit=crop",
+      "title": "Special Promotion",
+      "description": "Get 50% off on all premium courses this month",
+      "visibility": "scheduled",
+      "scheduleDate": "2024-01-01T00:00:00.000Z",
+      "expiryDate": "2024-12-31T23:59:59.999Z",
+      "isActive": true,
+      "createdAt": "2024-01-15T00:00:00.000Z",
+      "updatedAt": "2025-07-30T03:40:15.275Z",
+      "order": 1
     },
     {
-      "id": "503",
-      "imageUrl": "https://i.imgur.com/your-banner-3.png",
-      "status": "inactive",
-      "scheduleDate": null,
-      "expiryDate": null
+      "id": "mdpf3j46g19cvkealfp",
+      "imageUrl": "https://images.unsplash.com/photo-1434626881859-194d67b2b86f?w=1200&h=300&fit=crop",
+      "title": "Screenshot 2025-07-30 084335",
+      "description": "rergh",
+      "visibility": "draft",
+      "scheduleDate": "",
+      "expiryDate": "",
+      "isActive": true,
+      "order": 0,
+      "createdAt": "2025-07-30T03:39:53.862Z",
+      "updatedAt": "2025-07-30T03:40:05.634Z"
+    },
+    {
+      "id": "mdpf5u6gf00oyl4krw6",
+      "imageUrl": "https://images.unsplash.com/photo-1434626881859-194d67b2b86f?w=1200&h=300&fit=crop",
+      "title": "Screenshot (237)",
+      "description": "rheheh",
+      "visibility": "draft",
+      "scheduleDate": "",
+      "expiryDate": "",
+      "isActive": true,
+      "order": 0,
+      "createdAt": "2025-07-30T03:41:41.512Z",
+      "updatedAt": "2025-07-30T03:41:41.512Z"
     }
   ]
 }

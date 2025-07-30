@@ -201,6 +201,159 @@
       </div>
     </div>
 
+    <!-- Dynamic Banner Tab Content -->
+    <div *ngIf="activeTab === 'dynamic-banner'" class="tab-content">
+      <div class="content-container">
+
+        <!-- Banner Management Header -->
+        <div class="banner-header">
+          <h3 class="section-title">Home page banner</h3>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isBannerLoading && banners.length === 0" class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading banners...</p>
+        </div>
+
+        <!-- File Uploader Section -->
+        <div *ngIf="!showAddBannerForm && !isBannerLoading" class="file-upload-section">
+          <app-file-uploader
+            [acceptedTypes]="'image/*'"
+            [maxFileSize]="5242880"
+            [multiple]="false"
+            [placeholder]="'Drag and Drop file here, or Choose file.'"
+            (fileSelected)="onBannerFileSelected($event)"
+            (uploadError)="onBannerUploadError($event)">
+          </app-file-uploader>
+        </div>
+
+        <!-- Banner Form (After Upload) -->
+        <div *ngIf="showAddBannerForm && !isBannerLoading" class="banner-form-section">
+          <div class="banner-preview">
+            <img [src]="currentBannerUpload.preview" [alt]="currentBannerUpload.title" class="banner-image">
+          </div>
+          
+          <div class="banner-form">
+            <div class="form-group">
+              <label class="form-label">Banner Title</label>
+              <input type="text" 
+                     class="form-input" 
+                     [(ngModel)]="currentBannerUpload.title"
+                     placeholder="Enter banner title">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Description (Optional)</label>
+              <textarea class="form-textarea"
+                        [(ngModel)]="currentBannerUpload.description"
+                        placeholder="Enter banner description..."
+                        rows="3">
+              </textarea>
+            </div>
+            
+            <div class="form-actions">
+              <button class="btn btn-secondary" (click)="resetBannerForm()">Cancel</button>
+              <button class="btn btn-primary" (click)="saveBanner()">Save Banner</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner List -->
+        <div *ngIf="banners.length > 0" class="banner-list-section">
+          
+          <div class="banner-item" *ngFor="let banner of banners; let i = index">
+            <div class="banner-preview-container">
+              <img [src]="banner.imageUrl" [alt]="banner.title" class="banner-thumbnail">
+              
+              <!-- Action Icons -->
+              <div class="banner-actions">
+                <button class="action-btn update-btn" 
+                        (click)="fileInput.click()"
+                        title="Replace/Update Banner">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 12a9 9 0 00-9-9 9.75 9.75 0 00-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                    <path d="M3 12a9 9 0 009 9 9.75 9.75 0 006.74-2.74L21 16"></path>
+                    <path d="M21 21v-5h-5"></path>
+                  </svg>
+                </button>
+                
+                <button class="action-btn delete-btn" 
+                        (click)="deleteBanner(banner.id)"
+                        title="Delete Banner">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polyline points="3,6 5,6 21,6"></polyline>
+                    <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2v2"></path>
+                  </svg>
+                </button>
+                
+                <!-- Hidden file input for replace -->
+                <input #fileInput
+                       type="file"
+                       accept="image/*"
+                       style="display: none"
+                       (change)="updateBannerImage(banner.id, $event)">
+              </div>
+            </div>
+            
+            <div class="banner-details">
+              <h4 class="banner-title">{{ banner.title }}</h4>
+              <p class="banner-description" *ngIf="banner.description">{{ banner.description }}</p>
+            </div>
+          </div>
+
+          <!-- Add Another Banner -->
+          <div class="add-another-section">
+            <button class="add-another-btn" (click)="addAnotherBanner()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add another answer
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Visibility and Scheduling Controls -->
+        <div *ngIf="banners.length > 0" class="visibility-controls-section">
+          
+          <div class="control-group">
+            <label class="control-label">Make this visible</label>
+            <select class="control-select" 
+                    [value]="banners[0].visibility"
+                    (change)="onBannerVisibilityChange($event, banners[0].id)">
+              <option value="draft">Will decide later</option>
+              <option value="now">Now</option>
+              <option value="scheduled">Schedule for later</option>
+            </select>
+          </div>
+
+          <!-- Conditional Date Pickers -->
+          <div *ngIf="banners[0].visibility === 'scheduled'" class="date-controls">
+            <div class="date-group">
+              <label class="control-label">Schedule Date</label>
+              <input type="date" 
+                     class="control-input"
+                     [value]="banners[0].scheduleDate ? banners[0].scheduleDate.split('T')[0] : ''"
+                     (change)="onScheduleDateChange($event, banners[0].id)">
+            </div>
+            
+            <div class="date-group">
+              <label class="control-label">Expiry Date</label>
+              <input type="date" 
+                     class="control-input"
+                     [value]="banners[0].expiryDate ? banners[0].expiryDate.split('T')[0] : ''"
+                     (change)="onExpiryDateChange($event, banners[0].id)">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
     <!-- Other Tab Contents (Placeholder) -->
     <div *ngIf="activeTab !== 'user-management'" class="tab-content">
       <div class="content-container">

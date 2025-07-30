@@ -857,3 +857,325 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+// Dynamic Banner Tab Styles
+.banner-header {
+  margin-bottom: 32px;
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0;
+  }
+}
+
+.file-upload-section {
+  margin-bottom: 32px;
+}
+
+.banner-form-section {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  .banner-preview {
+    flex-shrink: 0;
+    width: 200px;
+
+    .banner-image {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #E5E7EB;
+    }
+  }
+
+  .banner-form {
+    flex: 1;
+
+    .form-group {
+      margin-bottom: 20px;
+
+      .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+      }
+
+      .form-input,
+      .form-textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #D1D5DB;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #3B82F6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+
+      .btn {
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+
+        &.btn-secondary {
+          background: #F3F4F6;
+          color: #374151;
+
+          &:hover {
+            background: #E5E7EB;
+          }
+        }
+
+        &.btn-primary {
+          background: #3B82F6;
+          color: white;
+
+          &:hover {
+            background: #2563EB;
+          }
+        }
+      }
+    }
+  }
+}
+
+.banner-list-section {
+  .banner-item {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .banner-preview-container {
+      position: relative;
+      flex-shrink: 0;
+
+      .banner-thumbnail {
+        width: 200px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #E5E7EB;
+      }
+
+      .banner-actions {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 6px;
+
+        .action-btn {
+          width: 32px;
+          height: 32px;
+          border-radius: 6px;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          backdrop-filter: blur(8px);
+
+          svg {
+            stroke-width: 2;
+          }
+
+          &.update-btn {
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
+
+            &:hover {
+              background: rgba(37, 99, 235, 0.9);
+              transform: scale(1.05);
+            }
+          }
+
+          &.delete-btn {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+
+            &:hover {
+              background: rgba(220, 38, 38, 0.9);
+              transform: scale(1.05);
+            }
+          }
+        }
+      }
+    }
+
+    .banner-details {
+      flex: 1;
+
+      .banner-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1F2937;
+        margin: 0 0 8px 0;
+      }
+
+      .banner-description {
+        font-size: 14px;
+        color: #6B7280;
+        margin: 0;
+        line-height: 1.5;
+      }
+    }
+  }
+
+  .add-another-section {
+    margin-top: 20px;
+
+    .add-another-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: #3B82F6;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 8px 0;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #2563EB;
+        text-decoration: underline;
+      }
+
+      svg {
+        stroke-width: 2;
+      }
+    }
+  }
+}
+
+.visibility-controls-section {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 24px;
+
+  .control-group {
+    margin-bottom: 20px;
+
+    .control-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .control-select {
+      padding: 10px 12px;
+      border: 1px solid #D1D5DB;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+      min-width: 200px;
+
+      &:focus {
+        outline: none;
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+    }
+  }
+
+  .date-controls {
+    display: flex;
+    gap: 20px;
+
+    .date-group {
+      flex: 1;
+
+      .control-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+      }
+
+      .control-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #D1D5DB;
+        border-radius: 6px;
+        font-size: 14px;
+
+        &:focus {
+          outline: none;
+          border-color: #3B82F6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments for banner management
+@media (max-width: 768px) {
+  .banner-form-section {
+    flex-direction: column;
+
+    .banner-preview {
+      width: 100%;
+
+      .banner-image {
+        height: 180px;
+      }
+    }
+  }
+
+  .banner-item {
+    flex-direction: column;
+
+    .banner-preview-container .banner-thumbnail {
+      width: 100%;
+      height: 180px;
+    }
+  }
+
+  .date-controls {
+    flex-direction: column;
+  }
+}

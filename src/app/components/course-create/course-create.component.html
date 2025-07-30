@@ -1,0 +1,671 @@
+<div class="course-create-page">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Main Content -->
+  <div class="course-create-content">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-container">
+        
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+          <a (click)="navigateToHome()" class="breadcrumb-link">Home</a>
+          <svg class="breadcrumb-separator" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+          <a (click)="navigateToMyCourses()" class="breadcrumb-link">My Courses</a>
+          <svg class="breadcrumb-separator" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+          <span class="breadcrumb-current">Create New Course</span>
+        </nav>
+
+        <!-- Page Title and Actions -->
+        <div class="title-section">
+          <h1 class="page-title">Create New Course</h1>
+          <button class="publish-btn" 
+                  [class.disabled]="!canPublish() || isPublishing" 
+                  [disabled]="!canPublish() || isPublishing"
+                  (click)="publishCourse()">
+            <span *ngIf="!isPublishing">Publish</span>
+            <span *ngIf="isPublishing" class="publishing-text">
+              <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 12a9 9 0 11-6.219-8.56"/>
+              </svg>
+              Publishing...
+            </span>
+          </button>
+        </div>
+
+        <!-- Progress Stepper -->
+        <div class="progress-stepper">
+          <div *ngFor="let step of steps" 
+               class="step-item"
+               [class.active]="currentStep === step.id"
+               [class.completed]="step.completed"
+               (click)="goToStep(step.id)">
+            <div class="step-number">
+              <span *ngIf="!step.completed">{{ step.id.toString().padStart(2, '0') }}</span>
+              <svg *ngIf="step.completed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+            </div>
+            <span class="step-title">{{ step.title }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Step Content -->
+    <div class="step-content">
+      <div class="content-container">
+
+        <!-- Step 1: Basic Details -->
+        <div *ngIf="currentStep === 1" class="step-panel">
+          <h2 class="step-heading">Details</h2>
+          
+          <form [formGroup]="basicDetailsForm" class="basic-details-form">
+            
+            <!-- Course Title -->
+            <div class="form-group">
+              <label class="form-label">Course Title</label>
+              <input 
+                type="text" 
+                class="form-input"
+                placeholder="Enter Course title here"
+                formControlName="title">
+              <div *ngIf="basicDetailsForm.get('title')?.invalid && basicDetailsForm.get('title')?.touched" 
+                   class="form-error">
+                Course title is required (minimum 5 characters)
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea 
+                class="form-textarea"
+                placeholder="Enter Course title here"
+                rows="6"
+                formControlName="description">
+              </textarea>
+              <div *ngIf="basicDetailsForm.get('description')?.invalid && basicDetailsForm.get('description')?.touched" 
+                   class="form-error">
+                Description is required (minimum 20 characters)
+              </div>
+            </div>
+
+            <!-- Upload Course Thumbnail -->
+            <div class="form-group">
+              <label class="form-label">Upload Course thumbnail</label>
+              <div class="file-upload-area" (click)="fileInput.click()">
+                <div *ngIf="!courseData.thumbnailUrl" class="upload-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17,8 12,3 7,8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <p>Drag and drop file to upload or,</p>
+                  <button type="button" class="choose-file-btn">Choose file</button>
+                </div>
+                <div *ngIf="courseData.thumbnailUrl" class="upload-preview">
+                  <img [src]="courseData.thumbnailUrl" alt="Course thumbnail" class="thumbnail-preview">
+                  <button type="button" class="change-file-btn" (click)="fileInput.click()">Change file</button>
+                </div>
+              </div>
+              <input #fileInput 
+                     type="file" 
+                     accept="image/*" 
+                     style="display: none"
+                     (change)="onThumbnailSelected($event)">
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Step 2: Course Content -->
+        <div *ngIf="currentStep === 2" class="step-panel">
+          <h2 class="step-heading">Modules</h2>
+          
+          <div class="course-content-builder">
+            
+            <!-- Sections List -->
+            <div class="sections-list">
+              <div *ngFor="let section of courseData.sections; let i = index" class="section-item">
+                
+                <!-- Section Header -->
+                <div class="section-header">
+                  <input 
+                    type="text" 
+                    class="section-title-input"
+                    [(ngModel)]="section.title"
+                    (blur)="updateSectionTitle(section.id, section.title)"
+                    placeholder="Enter module title here">
+                  
+                  <div class="section-summary">{{ getSectionSummary(section) }}</div>
+                  
+                  <div class="section-actions">
+                    <button class="action-btn" (click)="duplicateSection(section.id)" title="Duplicate">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      </svg>
+                    </button>
+                    <button class="action-btn delete" (click)="deleteSection(section.id)" title="Delete">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="3,6 5,6 21,6"></polyline>
+                        <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2v2"></path>
+                      </svg>
+                    </button>
+                    <button class="action-btn more">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Lectures List -->
+                <div class="lectures-list"
+                     (dragover)="onDragOver($event)"
+                     (drop)="onLectureDrop($event, section.id, section.lectures.length)">
+                  
+                  <div *ngFor="let lecture of section.lectures; let j = index" 
+                       class="lecture-item"
+                       draggable="true"
+                       (dragstart)="onLectureDragStart(lecture.id)"
+                       (dragover)="onDragOver($event)"
+                       (drop)="onLectureDrop($event, section.id, j)">
+                    
+                    <div class="drag-handle">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="9" cy="12" r="1"></circle>
+                        <circle cx="9" cy="5" r="1"></circle>
+                        <circle cx="9" cy="19" r="1"></circle>
+                        <circle cx="15" cy="12" r="1"></circle>
+                        <circle cx="15" cy="5" r="1"></circle>
+                        <circle cx="15" cy="19" r="1"></circle>
+                      </svg>
+                    </div>
+                    
+                    <div class="lecture-icon">{{ getLectureIcon(lecture.type) }}</div>
+                    
+                    <div class="lecture-content">
+                      <div class="lecture-title">{{ lecture.title }}</div>
+                      <div class="lecture-duration">{{ lecture.duration }}</div>
+                    </div>
+                    
+                    <button class="lecture-delete" (click)="deleteLecture(section.id, lecture.id)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <!-- Add Lecture Button -->
+                  <button class="add-lecture-btn" (click)="openAddLectureModal(section.id)">
+                    Add Lecture
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Add New Section Button -->
+            <button class="add-section-btn" (click)="addSection()">
+              Add New Section
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Step 3: Overview -->
+        <div *ngIf="currentStep === 3" class="step-panel">
+          <h2 class="step-heading">Overview</h2>
+          
+          <form [formGroup]="overviewForm" class="overview-form">
+            
+            <div class="form-row">
+              <!-- Duration -->
+              <div class="form-group half">
+                <label class="form-label">Duration</label>
+                <input 
+                  type="text" 
+                  class="form-input"
+                  placeholder="e.g., 2 hours 30 minutes"
+                  formControlName="duration">
+              </div>
+
+              <!-- Level -->
+              <div class="form-group half">
+                <label class="form-label">Level</label>
+                <select class="form-select" formControlName="level">
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- What you will learn -->
+            <div class="form-group">
+              <label class="form-label">What you will learn</label>
+              <div formArrayName="whatYoullLearn">
+                <div *ngFor="let item of getFormArray('whatYoullLearn').controls; let i = index" class="array-item">
+                  <input 
+                    type="text" 
+                    class="form-input"
+                    placeholder="Enter learning objective"
+                    [formControlName]="i">
+                  <button type="button" 
+                          class="remove-btn" 
+                          *ngIf="getFormArray('whatYoullLearn').length > 1"
+                          (click)="removeFormArrayItem('whatYoullLearn', i)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="add-item-btn" (click)="addFormArrayItem('whatYoullLearn')">
+                + Add learning objective
+              </button>
+            </div>
+
+            <!-- Skills you will gain -->
+            <div class="form-group">
+              <label class="form-label">What skill you will gain</label>
+              <div formArrayName="skillsYoullGain">
+                <div *ngFor="let item of getFormArray('skillsYoullGain').controls; let i = index" class="array-item">
+                  <input 
+                    type="text" 
+                    class="form-input"
+                    placeholder="Enter skill"
+                    [formControlName]="i">
+                  <button type="button" 
+                          class="remove-btn" 
+                          *ngIf="getFormArray('skillsYoullGain').length > 1"
+                          (click)="removeFormArrayItem('skillsYoullGain', i)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="add-item-btn" (click)="addFormArrayItem('skillsYoullGain')">
+                + Add skill
+              </button>
+            </div>
+
+            <!-- Prerequisites -->
+            <div class="form-group">
+              <label class="form-label">Prerequisites</label>
+              <div formArrayName="prerequisites">
+                <div *ngFor="let item of getFormArray('prerequisites').controls; let i = index" class="array-item">
+                  <input 
+                    type="text" 
+                    class="form-input"
+                    placeholder="Enter prerequisite"
+                    [formControlName]="i">
+                  <button type="button" 
+                          class="remove-btn" 
+                          *ngIf="getFormArray('prerequisites').length > 1"
+                          (click)="removeFormArrayItem('prerequisites', i)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="add-item-btn" (click)="addFormArrayItem('prerequisites')">
+                + Add prerequisite
+              </button>
+            </div>
+
+            <!-- Software Requirements -->
+            <div class="form-group">
+              <label class="form-label">Software Requirements</label>
+              <div formArrayName="softwareRequirements">
+                <div *ngFor="let item of getFormArray('softwareRequirements').controls; let i = index" class="array-item">
+                  <input 
+                    type="text" 
+                    class="form-input"
+                    placeholder="Enter software requirement"
+                    [formControlName]="i">
+                  <button type="button" 
+                          class="remove-btn" 
+                          *ngIf="getFormArray('softwareRequirements').length > 1"
+                          (click)="removeFormArrayItem('softwareRequirements', i)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="add-item-btn" (click)="addFormArrayItem('softwareRequirements')">
+                + Add software requirement
+              </button>
+            </div>
+
+            <div class="form-row">
+              <!-- Price -->
+              <div class="form-group half">
+                <label class="form-label">Price ($)</label>
+                <input 
+                  type="number" 
+                  class="form-input"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  formControlName="price">
+              </div>
+
+              <!-- Category -->
+              <div class="form-group half">
+                <label class="form-label">Category</label>
+                <select class="form-select" formControlName="category">
+                  <option value="">Select Category</option>
+                  <option value="Technology">Technology</option>
+                  <option value="Business">Business</option>
+                  <option value="Design">Design</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Personal Development">Personal Development</option>
+                </select>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Navigation Footer -->
+    <div class="navigation-footer">
+      <div class="footer-container">
+        
+        <button class="delete-btn" (click)="deleteCourse()">
+          Delete
+        </button>
+        
+        <div class="nav-buttons">
+          <button class="save-draft-btn" (click)="saveDraft()">
+            Save Draft
+          </button>
+          
+          <button class="prev-btn" 
+                  *ngIf="currentStep > 1"
+                  (click)="prevStep()">
+            Prev
+          </button>
+          
+          <button class="next-btn" 
+                  *ngIf="currentStep < totalSteps"
+                  (click)="nextStep()">
+            Next
+          </button>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Add Lecture Modal -->
+  <div *ngIf="showAddLectureModal" class="modal-overlay" (click)="closeAddLectureModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header">
+        <h3>Add New Lecture</h3>
+        <button class="close-btn" (click)="closeAddLectureModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form [formGroup]="lectureForm" class="modal-form">
+        
+        <!-- Type -->
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select class="form-select" formControlName="type">
+            <option value="video">Video</option>
+            <option value="topic-content">Topic Content editor</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </div>
+
+        <!-- Topic Title -->
+        <div class="form-group">
+          <label class="form-label">Topic Title</label>
+          <input 
+            type="text" 
+            class="form-input"
+            placeholder="Enter Course title here"
+            formControlName="title">
+          <div *ngIf="lectureForm.get('title')?.invalid && lectureForm.get('title')?.touched" 
+               class="form-error">
+            Topic title is required (minimum 3 characters)
+          </div>
+        </div>
+
+        <!-- Topic Description -->
+        <div class="form-group">
+          <label class="form-label">Topic Description</label>
+          <textarea 
+            class="form-textarea"
+            placeholder="Enter Topic Description here"
+            rows="4"
+            formControlName="description">
+          </textarea>
+          <div *ngIf="lectureForm.get('description')?.invalid && lectureForm.get('description')?.touched" 
+               class="form-error">
+            Topic description is required (minimum 10 characters)
+          </div>
+        </div>
+
+        <!-- Video Content (if type is video) -->
+        <div *ngIf="lectureForm.get('type')?.value === 'video'">
+          <div class="form-group">
+            <label class="form-label">Upload Video File</label>
+            <div class="file-upload-area" (click)="videoFileInput.click()">
+              <div *ngIf="!lectureForm.get('videoUrl')?.value" class="upload-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17,8 12,3 7,8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <p>Drag and drop file to upload or,</p>
+                <button type="button" class="choose-file-btn">Choose file</button>
+              </div>
+              <div *ngIf="lectureForm.get('videoUrl')?.value" class="upload-success">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                <span>Video uploaded successfully</span>
+              </div>
+            </div>
+            <input #videoFileInput 
+                   type="file" 
+                   accept="video/*" 
+                   style="display: none"
+                   (change)="onVideoFileSelected($event)">
+            
+            <div class="video-url-option">
+              <span>or add link for video</span>
+              <input 
+                type="url" 
+                class="form-input"
+                placeholder="enter link here"
+                formControlName="videoUrl">
+            </div>
+          </div>
+        </div>
+
+        <!-- Topic Content Editor (if type is topic-content) -->
+        <div *ngIf="lectureForm.get('type')?.value === 'topic-content'">
+          <div class="form-group">
+            <label class="form-label">Content</label>
+            <div class="rich-text-editor">
+              <!-- Rich Text Editor Toolbar -->
+              <div class="rte-toolbar">
+                <button type="button" class="rte-btn" title="Bold" (click)="formatText('bold')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                    <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                  </svg>
+                </button>
+                <button type="button" class="rte-btn" title="Italic" (click)="formatText('italic')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="19" y1="4" x2="10" y2="4"></line>
+                    <line x1="14" y1="20" x2="5" y2="20"></line>
+                    <line x1="15" y1="4" x2="9" y2="20"></line>
+                  </svg>
+                </button>
+                <button type="button" class="rte-btn" title="Underline" (click)="formatText('underline')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
+                    <line x1="4" y1="21" x2="20" y2="21"></line>
+                  </svg>
+                </button>
+                <div class="rte-divider"></div>
+                <button type="button" class="rte-btn" title="Bullet List" (click)="formatText('insertUnorderedList')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                  </svg>
+                </button>
+                <button type="button" class="rte-btn" title="Numbered List" (click)="formatText('insertOrderedList')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="10" y1="6" x2="21" y2="6"></line>
+                    <line x1="10" y1="12" x2="21" y2="12"></line>
+                    <line x1="10" y1="18" x2="21" y2="18"></line>
+                    <path d="M4 6h1v4"></path>
+                    <path d="M4 10h2"></path>
+                    <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path>
+                  </svg>
+                </button>
+              </div>
+              <!-- Rich Text Editor Content -->
+              <div 
+                #richTextEditor
+                class="rte-content"
+                contenteditable="true"
+                (input)="onRichTextChange($event)"
+                (blur)="onRichTextBlur()"
+                placeholder="Enter your topic content here...">
+              </div>
+            </div>
+            <textarea 
+              class="hidden-textarea"
+              formControlName="textContent"
+              style="display: none;">
+            </textarea>
+          </div>
+        </div>
+
+        <!-- PDF Upload (if type is pdf) -->
+        <div *ngIf="lectureForm.get('type')?.value === 'pdf'">
+          <div class="form-group">
+            <label class="form-label">Upload PDF File</label>
+            <div class="file-upload-area" (click)="pdfFileInput.click()">
+              <div *ngIf="!lectureForm.get('pdfUrl')?.value" class="upload-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17,8 12,3 7,8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <p>Drag and drop PDF file to upload or,</p>
+                <button type="button" class="choose-file-btn">Choose file</button>
+              </div>
+              <div *ngIf="lectureForm.get('pdfUrl')?.value" class="upload-success">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                <span>PDF uploaded successfully</span>
+              </div>
+            </div>
+            <input #pdfFileInput 
+                   type="file" 
+                   accept=".pdf,application/pdf" 
+                   style="display: none"
+                   (change)="onPdfFileSelected($event)">
+          </div>
+        </div>
+
+        <!-- Duration -->
+        <div class="form-group">
+          <label class="form-label">Duration (minutes)</label>
+          <input 
+            type="number" 
+            class="form-input"
+            placeholder="15"
+            min="1"
+            formControlName="duration">
+          <div *ngIf="lectureForm.get('duration')?.invalid && lectureForm.get('duration')?.touched" 
+               class="form-error">
+            Duration is required
+          </div>
+        </div>
+
+      </form>
+
+      <div class="modal-footer">
+        <button type="button" class="cancel-btn" (click)="closeAddLectureModal()">
+          Cancel
+        </button>
+        <button type="button" 
+                class="submit-btn" 
+                [disabled]="lectureForm.invalid"
+                (click)="addLecture()">
+          Submit
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Publish Success Modal -->
+  <div *ngIf="showPublishSuccessModal" class="modal-overlay">
+    <div class="success-modal-content">
+      
+      <div class="success-modal-body">
+        <div class="success-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22,4 12,14.01 9,11.01"></polyline>
+          </svg>
+        </div>
+        
+        <h3 class="success-title">Your course published successfully!</h3>
+        
+        <p class="success-message">
+          Dear user, your course is successfully published and its available for 
+          the enrollment!
+        </p>
+        
+        <button class="success-ok-btn" (click)="onPublishSuccessOk()">
+          Ok
+        </button>
+      </div>
+      
+    </div>
+  </div>
+
+</div>

@@ -75,12 +75,24 @@ export class MyCoursesComponent implements OnInit, OnDestroy {
   }
 
   private loadAuthorCourses() {
-    // For demo purposes, we'll create mock courses for the current author
+    // Load published courses from localStorage
+    const publishedCourses = JSON.parse(localStorage.getItem('publishedCourses') || '[]');
+    
+    // For demo purposes, we'll also create mock courses for the current author
     this.courseService.getAllCourses()
       .pipe(takeUntil(this.destroy$))
       .subscribe(allCourses => {
-        // Create mock author courses based on existing courses
-        this.courses = this.createMockAuthorCourses(allCourses);
+        // Combine published courses with mock courses
+        const mockCourses = this.createMockAuthorCourses(allCourses.slice(0, 5));
+        const authorPublishedCourses = publishedCourses.map((course: any) => ({
+          ...course,
+          status: 'Published' as const,
+          createdDate: course.createdAt || new Date().toISOString(),
+          lastUpdated: course.updatedAt || new Date().toISOString(),
+          progressPercent: 0
+        }));
+        
+        this.courses = [...authorPublishedCourses, ...mockCourses];
         this.updateTabCounts();
         this.applyFiltersAndSort();
         this.isLoading = false;
@@ -161,8 +173,7 @@ export class MyCoursesComponent implements OnInit, OnDestroy {
   }
 
   createNewCourse() {
-    // For demo purposes, show alert. In real app, navigate to course creation page
-    alert('Navigate to course creation page - Feature coming soon!');
+    this.router.navigate(['/create-course']);
   }
 
   onCourseCardClick(course: AuthorCourse) {

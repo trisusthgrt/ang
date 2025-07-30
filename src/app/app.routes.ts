@@ -33,5 +33,9 @@ export const routes: Routes = [
   {
     path: 'my-courses',
     loadComponent: () => import('./components/my-courses/my-courses.component').then(m => m.MyCoursesComponent)
+  },
+  {
+    path: 'create-course',
+    loadComponent: () => import('./components/course-create/course-create.component').then(m => m.CourseCreateComponent)
   }
 ];
